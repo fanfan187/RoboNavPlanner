@@ -1,0 +1,18 @@
+{
+    "pso": {
+        "generations": 300,
+        "particleCount": 150,
+        "globalGuideCoe": 2.0,
+        "localGuideCoe": 2.0,
+        "maxSpeed": 4.0
+    },
+    "pathPlanning": {
+        "numWaypoints": 6,
+        "mapCellSize": 1.0
+    },
+    "visualization": {
+        "windowWidth": 800,
+        "windowHeight": 600,
+        "frameRate": 60
+    }
+} 

@@ -1,0 +1,19 @@
+# 构建输出
+build/
+*.exe
+*.o
+*.obj
+
+# IDE文件
+.vscode/settings.json
+.vscode/tasks.json
+
+# 临时文件
+*.tmp
+*.temp
+
+# 日志文件
+*.log
+
+# SFML DLL文件（如果复制到项目中）
+*.dll 
