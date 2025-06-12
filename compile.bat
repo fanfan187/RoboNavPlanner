@@ -15,6 +15,9 @@ if not exist "%SFML_DIR%\include\SFML" (
 :: 添加mingw32到环境变量路径
 SET PATH=C:\Tools\mingw32\bin;%PATH%
 
+:: 创建build目录（如果不存在）
+if not exist "build" mkdir build
+
 :: 开始编译 - 使用C++17标准
 echo 正在使用 g++ 来编译项目源文件 (C++17标准)...
 g++ -std=c++17 -Wall -O2 ^

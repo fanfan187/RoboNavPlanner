@@ -2,6 +2,7 @@
 #include "core/Map.h"
 #include "core/PathPlanner.h"
 #include "visualization/Visualizer.h"
+#include "config/ConfigManager.h"
 #include <math.h>
 #include <iostream>
 #include <chrono>
@@ -11,8 +12,16 @@ using namespace std;
 int main() {
     std::cout << "=== 基于PSO的机器人路径规划系统 ===" << std::endl;
 
+    // 加载配置文件
+    ConfigManager configManager;
+    configManager.loadConfig("data/config/pso_config.json");
+    const AppConfig& config = configManager.getConfig();
+    
+    // 打印加载的配置
+    configManager.printConfig();
+
     // 创建地图
-    Map robotMap(20, 20, 1.0); // 20x20的网格，每个单元格大小为1.0
+    Map robotMap(20, 20, config.pathPlanning.mapCellSize); // 使用配置文件中的单元格大小
     
     // 尝试从文件加载地图
     if (!robotMap.loadFromFile("data/maps/map.txt")) {
@@ -34,26 +43,18 @@ int main() {
         std::cout << "警告: 终点位于障碍物中！" << std::endl;
     }
 
-    // 创建路径规划器
-    int numWaypoints = 6; // 中间航点数量
-    PathPlanner planner(&robotMap, startPoint, endPoint, numWaypoints);
+    // 创建路径规划器 - 使用配置文件中的参数
+    PathPlanner planner(&robotMap, startPoint, endPoint, config.pathPlanning.numWaypoints);
 
     std::cout << "\n开始路径规划..." << std::endl;
-    std::cout << "中间航点数量: " << numWaypoints << std::endl;
-    std::cout << "粒子维度: " << numWaypoints * 2 << std::endl;
+    std::cout << "中间航点数量: " << config.pathPlanning.numWaypoints << std::endl;
+    std::cout << "粒子维度: " << config.pathPlanning.numWaypoints * 2 << std::endl;
 
     // 记录开始时间
     auto startTime = std::chrono::high_resolution_clock::now();
 
-    // 执行路径规划
-    int generations = 300;    // 进化代数
-    int particleCount = 150;  // 粒子数量
-    
-    std::cout << "PSO参数:" << std::endl;
-    std::cout << "  进化代数: " << generations << std::endl;
-    std::cout << "  粒子数量: " << particleCount << std::endl;
-
-    std::vector<Point> bestPath = planner.planPath(generations, particleCount);
+    // 执行路径规划 - 使用配置文件中的PSO参数
+    std::vector<Point> bestPath = planner.planPath(config.pso.generations, config.pso.particleCount);
 
     // 记录结束时间
     auto endTime = std::chrono::high_resolution_clock::now();
@@ -71,9 +72,11 @@ int main() {
         std::cout << std::endl;
     }
 
-    // 创建可视化器
+    // 创建可视化器 - 使用配置文件中的窗口大小
     std::cout << "\n启动可视化窗口..." << std::endl;
-    Visualizer visualizer(&robotMap, &planner, 800, 600);
+    Visualizer visualizer(&robotMap, &planner, 
+                         config.visualization.windowWidth, 
+                         config.visualization.windowHeight);
     visualizer.setStartEnd(startPoint, endPoint);
     visualizer.setPath(bestPath);
 

@@ -24,10 +24,21 @@ set(SOURCES
     src/main.cpp
     src/core/PathPlanner.cpp
     src/visualization/Visualizer.cpp
+    src/config/ConfigManager.cpp
+)
+
+# 设置控制台版本源文件
+set(CONSOLE_SOURCES
+    src/main_console.cpp
+    src/core/PathPlanner.cpp
+    src/config/ConfigManager.cpp
 )
 
 # 创建可执行文件
 add_executable(${PROJECT_NAME} ${SOURCES})
+
+# 创建控制台版本可执行文件
+add_executable(${PROJECT_NAME}_Console ${CONSOLE_SOURCES})
 
 # 设置头文件目录
 target_include_directories(${PROJECT_NAME} PRIVATE
@@ -35,6 +46,15 @@ target_include_directories(${PROJECT_NAME} PRIVATE
     ${PROJECT_SOURCE_DIR}/src/algorithm
     ${PROJECT_SOURCE_DIR}/src/core
     ${PROJECT_SOURCE_DIR}/src/visualization
+    ${PROJECT_SOURCE_DIR}/src/config
+)
+
+# 设置控制台版本头文件目录
+target_include_directories(${PROJECT_NAME}_Console PRIVATE
+    ${PROJECT_SOURCE_DIR}/include
+    ${PROJECT_SOURCE_DIR}/src/algorithm
+    ${PROJECT_SOURCE_DIR}/src/core
+    ${PROJECT_SOURCE_DIR}/src/config
 )
 
 # 链接SFML库（使用现代CMake目标）
@@ -44,10 +64,18 @@ target_link_libraries(${PROJECT_NAME}
     SFML::System
 )
 
+# 控制台版本不需要链接SFML
+# target_link_libraries(${PROJECT_NAME}_Console) # 暂时不需要额外库
+
 # 添加编译宏定义
 target_compile_definitions(${PROJECT_NAME} PRIVATE 
     USE_SFML
     SFML_STATIC
+)
+
+# 控制台版本不需要SFML相关定义
+target_compile_definitions(${PROJECT_NAME}_Console PRIVATE 
+    CONSOLE_VERSION
 )
 
 # Windows特定的系统库依赖
@@ -61,6 +89,10 @@ endif()
 
 # 设置输出目录
 set_target_properties(${PROJECT_NAME} PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin
+)
+
+set_target_properties(${PROJECT_NAME}_Console PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin
 )
 

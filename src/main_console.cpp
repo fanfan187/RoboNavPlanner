@@ -2,6 +2,7 @@
 
 #include "core/Map.h"
 #include "core/PathPlanner.h"
+#include "config/ConfigManager.h"
 #include <iostream>
 #include <chrono>
 #include <iomanip>
@@ -69,8 +70,16 @@ void printMap(const Map& map, const std::vector<Point>& path, const Point& start
 int main() {
     cout << "=== 基于PSO的机器人路径规划系统 (控制台版本) ===" << endl;
 
+    // 加载配置文件
+    ConfigManager configManager;
+    configManager.loadConfig("data/config/pso_config.json");
+    const AppConfig& config = configManager.getConfig();
+    
+    // 打印加载的配置
+    configManager.printConfig();
+
     // 创建地图
-    Map robotMap(20, 20, 1.0);
+    Map robotMap(20, 20, config.pathPlanning.mapCellSize);
     
     // 尝试从文件加载地图
     if (!robotMap.loadFromFile("data/maps/map.txt")) {
@@ -92,26 +101,18 @@ int main() {
         cout << "警告: 终点位于障碍物中！" << endl;
     }
 
-    // 创建路径规划器
-    int numWaypoints = 6;
-    PathPlanner planner(&robotMap, startPoint, endPoint, numWaypoints);
+    // 创建路径规划器 - 使用配置文件中的参数
+    PathPlanner planner(&robotMap, startPoint, endPoint, config.pathPlanning.numWaypoints);
 
     cout << "\n开始路径规划..." << endl;
-    cout << "中间航点数量: " << numWaypoints << endl;
-    cout << "粒子维度: " << numWaypoints * 2 << endl;
+    cout << "中间航点数量: " << config.pathPlanning.numWaypoints << endl;
+    cout << "粒子维度: " << config.pathPlanning.numWaypoints * 2 << endl;
 
     // 记录开始时间
     auto startTime = chrono::high_resolution_clock::now();
 
-    // 执行路径规划
-    int generations = 300;
-    int particleCount = 150;
-    
-    cout << "PSO参数:" << endl;
-    cout << "  进化代数: " << generations << endl;
-    cout << "  粒子数量: " << particleCount << endl;
-
-    vector<Point> bestPath = planner.planPath(generations, particleCount);
+    // 执行路径规划 - 使用配置文件中的PSO参数
+    vector<Point> bestPath = planner.planPath(config.pso.generations, config.pso.particleCount);
 
     // 记录结束时间
     auto endTime = chrono::high_resolution_clock::now();
@@ -142,9 +143,9 @@ int main() {
     cout << "是否有碰撞: " << (hasCollision ? "是" : "否") << endl;
     
     if (!hasCollision) {
-        cout << "✓ 路径规划成功！找到了一条无碰撞路径。" << endl;
+        cout << "[成功] 路径规划成功！找到了一条无碰撞路径。" << endl;
     } else {
-        cout << "✗ 警告：路径存在碰撞，可能需要调整PSO参数。" << endl;
+        cout << "[警告] 路径存在碰撞，可能需要调整PSO参数。" << endl;
     }
 
     cout << "\n程序结束。" << endl;

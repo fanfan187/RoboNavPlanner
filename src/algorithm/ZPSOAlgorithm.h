@@ -5,62 +5,58 @@
 #include <stdlib.h>
 #include <time.h>
 #include <math.h>
+#include <vector>
+#include <memory>
+#include <random>
+#include <functional>
 
 //粒子群算法例子个体
 class ZPSO_Partical
 {
 public:
-    int _dimension; //粒子维度
-    double *_position; //粒子所在位置数组指针
-    double *_velocity; //例子速度
-    double *_bestPosition; //当前粒子搜索得到过的最优位置
-    double _fitness; //例子适应度
-    double _bestFitness; //当前粒子搜索得到过的最优适应度
-    //构造函数，粒子维度初始化为0
-    ZPSO_Partical(void)
-    {_dimension = 0;}
-    //析构函数，释放粒子内存
-    ~ZPSO_Partical(void)
-    {
-        if(_dimension)
-        {
-            delete []_position;
-            delete []_velocity;
-            delete []_bestPosition;
+    std::vector<double> _position;     // 使用 vector 替代裸指针
+    std::vector<double> _velocity;
+    std::vector<double> _bestPosition;
+    double _fitness = 0.0;
+    double _bestFitness = 0.0;
+    
+    // 默认构造函数
+    ZPSO_Partical() = default;
+    
+    // 带维度的构造函数
+    explicit ZPSO_Partical(int dimension) 
+        : _position(dimension), _velocity(dimension), _bestPosition(dimension) {}
+    
+    // 使用默认的拷贝构造函数和赋值操作符
+    ZPSO_Partical(const ZPSO_Partical&) = default;
+    ZPSO_Partical& operator=(const ZPSO_Partical&) = default;
+    
+    // 使用默认的移动构造函数和移动赋值操作符
+    ZPSO_Partical(ZPSO_Partical&&) = default;
+    ZPSO_Partical& operator=(ZPSO_Partical&&) = default;
+    
+    // 析构函数自动调用，vector 自动清理内存
+    ~ZPSO_Partical() = default;
+    
+    // 初始化函数
+    void initial(int dimension) {
+        if (getDimension() != dimension) {
+            _position.resize(dimension);
+            _velocity.resize(dimension);
+            _bestPosition.resize(dimension);
         }
     }
-    //初始化函数，用于为粒子开辟内存空间
-    void initial(int dimension)
-    {
-        if(_dimension!=dimension && dimension)
-        {
-            //需要重新分配内存
-            if(_dimension)
-            {
-                //消除已有内存
-                delete []_position;
-                delete []_velocity;
-                delete []_bestPosition;
-            }
-            //开辟新内存
-            _dimension = dimension;
-            _position = new double[_dimension];
-            _velocity = new double[_dimension];
-            _bestPosition = new double[_dimension];
-        }
-    }
-    //复制函数，用于粒子间的复制操作
-    void copy(ZPSO_Partical& partical)
-    {
-        this->initial(partical._dimension);
-        for(int i=0;i<_dimension;i++)
-        {
-            _position[i] = partical._position[i];
-            _velocity[i] = partical._velocity[i];
-            _bestPosition[i] = partical._bestPosition[i];
-            _fitness = partical._fitness;
-            _bestFitness = partical._bestFitness;
-        }
+    
+    // 获取维度
+    int getDimension() const { return static_cast<int>(_position.size()); }
+    
+    // 复制函数
+    void copy(const ZPSO_Partical& other) {
+        _position = other._position;
+        _velocity = other._velocity;
+        _bestPosition = other._bestPosition;
+        _fitness = other._fitness;
+        _bestFitness = other._bestFitness;
     }
 };
 
@@ -73,11 +69,11 @@ public:
     double _globalGuideCoe; //全局最优引导系数
     double _localGuideCoe; //局部最优引导系数
     ZPSO_Partical _globalBestPartical; //搜索过程得到的全局最优粒子
-    double *_positionMinValue; //粒子位置的最小界
-    double *_positionMaxValue; //粒子位置的最大界
+    std::vector<double> _positionMinValue;  // 使用 vector 替代裸指针
+    std::vector<double> _positionMaxValue;
     double _maxSpeed; //粒子允许最大速度
-    double (*_fitnessFunction)(ZPSO_Partical&); //粒子适应度函数
-    ZPSO_Partical *_particalSet; //粒子集
+    std::function<double(ZPSO_Partical&)> _fitnessFunction; // 使用 std::function
+    std::vector<ZPSO_Partical> _particalSet; // 使用 vector 管理粒子数组
     /***************************************************************
      * 函数名：ZPSO_Algorithm
      * 函数描述：构造一个PSO算法
@@ -93,34 +89,23 @@ public:
      * 输出参数：
      *  ZPSO_Algorithm&：构建得到的PSO算法本身
     ***************************************************************/
-    ZPSO_Algorithm(double (*objFunction)(ZPSO_Partical&),//在 C++ 中，double (*objFunction)(ZPSO_Partical&) 是一个函数指针，它指向一个接受 ZPSO_Partical&（引用类型）并返回 double 的函数。这种语法通常用于回调函数或优化算法?（如粒子群优化 PSO）的目标函数。
-                   double *positionMinValue,double *positionMaxValue,
-                   int dimension,int particalCount,
-                   double globalGuideCoe = 2,double localGuideCoe = 2,
-                   double maxSpeed = 1)
+    ZPSO_Algorithm(std::function<double(ZPSO_Partical&)> objFunction,
+                   const double* positionMinValue, const double* positionMaxValue,
+                   int dimension, int particalCount,
+                   double globalGuideCoe = 2.0, double localGuideCoe = 2.0,
+                   double maxSpeed = 1.0)
+        : _dimension(dimension)
+        , _particalCount(particalCount)
+        , _globalGuideCoe(globalGuideCoe)
+        , _localGuideCoe(localGuideCoe)
+        , _maxSpeed(maxSpeed)
+        , _positionMinValue(positionMinValue, positionMinValue + dimension)
+        , _positionMaxValue(positionMaxValue, positionMaxValue + dimension)
+        , _particalSet(particalCount, ZPSO_Partical(dimension))
+        , _globalBestPartical(dimension)
+        , _fitnessFunction(std::move(objFunction))
     {
-        //初始化类内参数并分配内存
-        //在 C++ 中，变量名前面加下划线（如 _dimension）通常是一种命名约定，用于标识类的成员变量（member variables）。
-        //这种写法主要有以下几个原因和注意事项：?(1) 区分成员变量和局部变量/参数；?团队规范?：某些团队或开源项目（如 Google C++ 风格指南）要求成员变量加 _ 后缀（如 dimension_），而另一些项目（如 Linux 内核代码）偏好 _ 前缀。
-        _fitnessFunction = objFunction;
-        _dimension = dimension;
-        _positionMinValue = new double[_dimension];
-        _positionMaxValue = new double[_dimension];
-        for(int i=0;i<_dimension;i++)
-        {
-            _positionMinValue[i] = positionMinValue[i];
-            _positionMaxValue[i] = positionMaxValue[i];
-        }
-        _particalCount = particalCount;
-        _globalGuideCoe = globalGuideCoe;
-        _localGuideCoe = localGuideCoe;
-        _maxSpeed = maxSpeed;
-        _particalSet = new ZPSO_Partical[_particalCount];
-        for(int i=0;i<_particalCount;i++)
-            _particalSet[i].initial(_dimension);
-        _globalBestPartical.initial(_dimension);
-        //配置随机数种子
-        srand((unsigned int)time(NULL));
+        // vector 自动管理内存，无需手动分配
     }
     /***************************************************************
      * 函数名：~ZPSO_Algorithm
@@ -129,13 +114,7 @@ public:
      * 输出参数：void
      * 在 C++ 中，~ZPSO_Algorithm(void) 是一个析构函数（destructor）?，它的作用是在对象被销毁时自动调用，用于清理资源?（如释放动态内存、关闭文件、释放锁等）。
     ***************************************************************/
-    ~ZPSO_Algorithm()
-    {
-        //释放内存
-        delete []_positionMinValue;
-        delete []_positionMaxValue;
-        delete []_particalSet;
-    }
+    ~ZPSO_Algorithm() = default;
     /***************************************************************
      * 函数名：rand0_1
      * 函数描述：生成一个0-1的均匀分布随机数
@@ -156,12 +135,11 @@ public:
         for(int i=0;i<_particalCount;i++)
         {
             //循环遍历所有粒子，更新粒子适应度
-            _particalSet[i]._fitness = this->_fitnessFunction(_particalSet[i]);
+            _particalSet[i]._fitness = _fitnessFunction(_particalSet[i]);
             if(_particalSet[i]._fitness > _particalSet[i]._bestFitness)
             {
                 //更新粒子的个体最优位置
-                for(int j=0;j<_dimension;j++)
-                    _particalSet[i]._bestPosition[j] = _particalSet[i]._position[j];
+                _particalSet[i]._bestPosition = _particalSet[i]._position;
                 _particalSet[i]._bestFitness = _particalSet[i]._fitness;
                 //是否更新全局最优解
                 if(_particalSet[i]._bestFitness > _globalBestPartical._bestFitness)
@@ -187,7 +165,7 @@ public:
         //初始化粒子位置与速度
         double velocityMod = 0;
         //遍历粒子的任一维度
-        for(int j=0;j<_particalSet[0]._dimension;j++)
+        for(int j=0;j<_particalSet[0].getDimension();j++)
         {
             //随机初始化粒子位置与最佳位置
             double tempVal = _positionMinValue[j];
@@ -201,7 +179,7 @@ public:
         //粒子速度归化为随机大小v_mod
         double v_mod = rand0_1()*_maxSpeed;
         velocityMod = sqrt(velocityMod);
-        for(int j=0;j<_particalSet[0]._dimension;j++)
+        for(int j=0;j<_particalSet[0]._position.size();j++)
             _particalSet[0]._velocity[j] *= (v_mod/velocityMod);
 
         //更新粒子初代适应度值与最佳适应度值
@@ -215,7 +193,7 @@ public:
             velocityMod = 0;
             //初始化粒子位置与速度
             //遍历粒子的任一维度
-            for(int j=0;j<_particalSet[i]._dimension;j++)
+            for(int j=0;j<_particalSet[i]._position.size();j++)
             {
                 //随机初始化粒子位置与最佳位置
                 double tempVal = _positionMinValue[j];
@@ -229,7 +207,7 @@ public:
             //粒子速度归化为随机大小v_mod
             v_mod = rand0_1()*_maxSpeed;
             velocityMod = sqrt(velocityMod);
-            for(int j=0;j<_particalSet[i]._dimension;j++)
+            for(int j=0;j<_particalSet[i]._position.size();j++)
                 _particalSet[i]._velocity[j] *= (v_mod/velocityMod);
 
             //更新粒子初代适应度值与最佳适应度值
@@ -254,7 +232,7 @@ public:
     void disturbance(ZPSO_Partical &partical,double relativeVelocityRate = 0.05)
     {
         //生成扰动速度
-        double *disturbanceVelocity = new double[_dimension];
+        std::vector<double> disturbanceVelocity(_dimension);
         //随机生成扰动速度大小
         double disturbanceVelocityMod = relativeVelocityRate*_maxSpeed*rand0_1();
         double v_mod = 0;
@@ -276,10 +254,10 @@ public:
         }
         v_mod = sqrt(v_mod);
         //粒子速度受限
-        if(v_mod > _maxSpeed)
+        if(v_mod > _maxSpeed) {
             for(int i=0;i<_dimension;i++)
                 partical._velocity[i] *= (_maxSpeed/v_mod);
-		delete[]disturbanceVelocity;
+        }
     }
     /***************************************************************
      * 函数名：update
@@ -301,7 +279,7 @@ public:
             v_mod = 0;
             double r1 = rand0_1();
             double r2 = rand0_1();
-            for(int j=0;j<_particalSet[i]._dimension;j++)
+            for(int j=0;j<_particalSet[i]._position.size();j++)
             {
                 //速度更新
                 //全局最优位置加速度
@@ -314,13 +292,13 @@ public:
             //粒子速度受限
             v_mod = sqrt(v_mod);
             if(v_mod > _maxSpeed)
-                for(int j=0;j<_particalSet[i]._dimension;j++)
+                for(int j=0;j<_particalSet[i]._position.size();j++)
                     _particalSet[i]._velocity[j] *= (_maxSpeed/v_mod);
             //对粒子速度进行扰动，提高算法局部搜索能力
             if(rand0_1()<disturbanceRate)
                 this->disturbance(_particalSet[i],disturbanceVelocityCoe);
             //位置更新
-            for(int j=0;j<_particalSet[i]._dimension;j++)
+            for(int j=0;j<_particalSet[i]._position.size();j++)
             {
                 _particalSet[i]._position[j] += _particalSet[i]._velocity[j];
                 //粒子位置受限

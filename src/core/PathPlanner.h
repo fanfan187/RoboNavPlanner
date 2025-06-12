@@ -1,7 +1,7 @@
 #ifndef PATHPLANNER_H
 #define PATHPLANNER_H
 
-#include "Common.h"
+#include "../../include/Common.h"
 #include "../algorithm/ZPSOAlgorithm.h"
 #include "Map.h"
 #include <vector>
