@@ -2,7 +2,7 @@
 echo 编译机器人路径规划项目 (控制台版本)...
 
 :: 编译控制台版本 (包含PathPlanner.cpp)
-g++ -std=c++14 -Isrc -o RoboNavPlanner_Console.exe src/main_console.cpp src/core/PathPlanner.cpp
+g++ -std=c++17 -Isrc -o RoboNavPlanner_Console.exe src/main_console.cpp src/core/PathPlanner.cpp
 
 if %ERRORLEVEL% EQU 0 (
     echo 编译成功！

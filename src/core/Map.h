@@ -6,11 +6,7 @@
 #include <fstream>
 #include <iostream>
 #include <cmath>
-
-struct Point {
-    double x, y;
-    Point(double x = 0, double y = 0) : x(x), y(y) {}
-};
+#include "../../include/Common.h"
 
 class Map {
 private:

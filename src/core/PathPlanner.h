@@ -1,6 +1,7 @@
 #ifndef PATHPLANNER_H
 #define PATHPLANNER_H
 
+#include "Common.h"
 #include "../algorithm/ZPSOAlgorithm.h"
 #include "Map.h"
 #include <vector>
@@ -47,9 +48,7 @@ public:
     double calculatePathLength(const std::vector<Point>& path) const {
         double totalLength = 0.0;
         for (size_t i = 1; i < path.size(); i++) {
-            double dx = path[i].x - path[i-1].x;
-            double dy = path[i].y - path[i-1].y;
-            totalLength += sqrt(dx * dx + dy * dy);
+            totalLength += path[i-1].distanceTo(path[i]);
         }
         return totalLength;
     }
