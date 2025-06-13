@@ -1,25 +1,26 @@
 @echo off
-echo 正在编译机器人路径规划项目...
+chcp 65001 >nul
+echo Compiling Robot Navigation Planner...
 
-:: 用户配置: 请根据实际的SFML安装路径修改下面这一行
+:: User Configuration: Modify the SFML installation path below as needed
 SET SFML_DIR=C:\Tools\SFML
 
-:: 检查SFML的路径
+:: Check SFML path
 if not exist "%SFML_DIR%\include\SFML" (
-    echo 错误: 在 "%SFML_DIR%\include" 中未找到SFML头文件目录。
-    echo 请确保SFML安装在指定目录下，或者修改此脚本中的 SFML_DIR 路径。
+    echo Error: SFML headers not found in "%SFML_DIR%\include".
+    echo Please ensure SFML is installed in the specified directory, or modify the SFML_DIR path in this script.
     pause
     exit /b 1
 )
 
-:: 添加mingw32到环境变量路径
+:: Add mingw32 to environment PATH
 SET PATH=C:\Tools\mingw32\bin;%PATH%
 
-:: 创建build目录（如果不存在）
+:: Create build directory if it doesn't exist
 if not exist "build" mkdir build
 
-:: 开始编译 - 使用C++17标准
-echo 正在使用 g++ 来编译项目源文件 (C++17标准)...
+:: Start compilation - using C++17 standard
+echo Compiling project source files with g++ (C++17 standard)...
 g++ -std=c++17 -Wall -O2 ^
     -DUSE_SFML ^
     -Iinclude -Isrc ^
@@ -28,15 +29,16 @@ g++ -std=c++17 -Wall -O2 ^
     src\main.cpp ^
     src\core\Map.cpp ^
     src\core\PathPlanner.cpp ^
+    src\config\ConfigManager.cpp ^
     src\visualization\Visualizer.cpp ^
     -L"%SFML_DIR%\lib" ^
     -lsfml-graphics -lsfml-window -lsfml-system
 
 if %ERRORLEVEL% EQU 0 (
-    echo 编译成功！build\RoboNavPlanner.exe 已生成。
-    echo 重要提示: 运行程序时可能需要SFML的DLL文件。
+    echo Compilation successful! build\RoboNavPlanner.exe has been generated.
+    echo Important note: SFML DLL files may be required when running the program.
 ) else (
-    echo 编译失败，请检查错误信息。
+    echo Compilation failed. Please check the error messages above.
 )
 
 pause

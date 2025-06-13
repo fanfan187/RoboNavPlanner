@@ -22,6 +22,7 @@ find_package(SFML REQUIRED COMPONENTS Graphics Window System)
 # 设置源文件
 set(SOURCES
     src/main.cpp
+    src/core/Map.cpp
     src/core/PathPlanner.cpp
     src/visualization/Visualizer.cpp
     src/config/ConfigManager.cpp
@@ -30,6 +31,7 @@ set(SOURCES
 # 设置控制台版本源文件
 set(CONSOLE_SOURCES
     src/main_console.cpp
+    src/core/Map.cpp
     src/core/PathPlanner.cpp
     src/config/ConfigManager.cpp
 )
