@@ -2,6 +2,8 @@
 
 #include "core/Map.h"
 #include "core/PathPlanner.h"
+#include "algorithm/HybridAStarPSOAlgorithm.h"
+#include "visualization/Visualizer.h"
 #include "config/ConfigManager.h"
 #include <iostream>
 #include <chrono>
@@ -75,13 +77,11 @@ int main() {
     configManager.loadConfig("data/config/pso_config.json");
     const AppConfig& config = configManager.getConfig();
     
-    // 打印加载的配置
     configManager.printConfig();
 
     // 创建地图
     Map robotMap(20, 20, config.pathPlanning.mapCellSize);
     
-    // 尝试从文件加载地图
     if (!robotMap.loadFromFile("data/maps/map.txt")) {
         cout << "无法加载地图文件，使用默认地图" << endl;
     }
@@ -101,51 +101,52 @@ int main() {
         cout << "警告: 终点位于障碍物中！" << endl;
     }
 
-    // 创建路径规划器 - 使用配置文件中的参数
-    PathPlanner planner(&robotMap, startPoint, endPoint, config.pathPlanning.numWaypoints);
+    // 创建PSO算法实例
+    auto algorithm = std::make_unique<HybridAStarPSOAlgorithm>();
+    
+    // 配置算法参数
+    algorithm->setParameter("generations", config.pso.generations);
+    algorithm->setParameter("particleCount", config.pso.particleCount);
+    algorithm->setParameter("globalGuideCoe", config.pso.globalGuideCoe);
+    algorithm->setParameter("localGuideCoe", config.pso.localGuideCoe);
+    algorithm->setParameter("maxSpeed", config.pso.maxSpeed);
+
+    // 创建路径规划器
+    PathPlanner planner(&robotMap, startPoint, endPoint, 
+                       std::move(algorithm), config.pathPlanning.numWaypoints);
 
     cout << "\n开始路径规划..." << endl;
-    cout << "中间航点数量: " << config.pathPlanning.numWaypoints << endl;
-    cout << "粒子维度: " << config.pathPlanning.numWaypoints * 2 << endl;
+    cout << "使用算法: " << planner.getCurrentAlgorithmName() << endl;
 
-    // 记录开始时间
-    auto startTime = chrono::high_resolution_clock::now();
+    // 执行路径规划
+    auto result = planner.planPath();
 
-    // 执行路径规划 - 使用配置文件中的PSO参数
-    vector<Point> bestPath = planner.planPath(config.pso.generations, config.pso.particleCount);
+    cout << "\n路径规划完成！" << endl;
+    cout << "成功: " << (result.success ? "是" : "否") << endl;
+    cout << "计算时间: " << result.computationTime << " 秒" << endl;
 
-    // 记录结束时间
-    auto endTime = chrono::high_resolution_clock::now();
-    auto duration = chrono::duration_cast<chrono::milliseconds>(endTime - startTime);
+    if (result.success) {
+        // 输出路径信息
+        cout << "\n找到的路径包含 " << result.path.size() << " 个点:" << endl;
+        for (size_t i = 0; i < result.path.size(); i++) {
+            cout << "  点 " << i << ": (" << fixed << setprecision(2) 
+                 << result.path[i].x << ", " << result.path[i].y << ")";
+            if (i == 0) cout << " [起点]";
+            else if (i == result.path.size() - 1) cout << " [终点]";
+            else cout << " [航点]";
+            cout << endl;
+        }
 
-    cout << "\n路径规划耗时: " << duration.count() << " 毫秒" << endl;
+        // ASCII可视化
+        printMap(robotMap, result.path, startPoint, endPoint);
 
-    // 输出路径信息
-    cout << "\n找到的路径包含 " << bestPath.size() << " 个点:" << endl;
-    for (size_t i = 0; i < bestPath.size(); i++) {
-        cout << "  点 " << i << ": (" << fixed << setprecision(2) 
-             << bestPath[i].x << ", " << bestPath[i].y << ")";
-        if (i == 0) cout << " [起点]";
-        else if (i == bestPath.size() - 1) cout << " [终点]";
-        else cout << " [航点]";
-        cout << endl;
-    }
-
-    // ASCII可视化
-    printMap(robotMap, bestPath, startPoint, endPoint);
-
-    // 路径质量分析
-    double totalLength = planner.calculatePathLength(bestPath);
-    bool hasCollision = planner.isPathColliding(bestPath);
-    
-    cout << "=== 路径质量分析 ===" << endl;
-    cout << "总路径长度: " << fixed << setprecision(2) << totalLength << endl;
-    cout << "是否有碰撞: " << (hasCollision ? "是" : "否") << endl;
-    
-    if (!hasCollision) {
+        // 路径质量分析
+        cout << "=== 路径质量分析 ===" << endl;
+        cout << "总路径长度: " << fixed << setprecision(2) << result.pathLength << endl;
+        cout << "适应度: " << result.fitness << endl;
         cout << "[成功] 路径规划成功！找到了一条无碰撞路径。" << endl;
     } else {
-        cout << "[警告] 路径存在碰撞，可能需要调整PSO参数。" << endl;
+        cout << "[失败] 路径规划失败，无法找到有效路径。" << endl;
     }
 
     cout << "\n程序结束。" << endl;

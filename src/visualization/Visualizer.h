@@ -20,6 +20,7 @@ private:
     double scale;
     Point startPoint, endPoint;
     std::vector<Point> currentPath;
+    std::vector<Point> astarGuidePath;  // A*引导路径
     bool pathFound;
 
 public:
@@ -27,6 +28,7 @@ public:
     
     void setStartEnd(const Point& start, const Point& end);
     void setPath(const std::vector<Point>& path);
+    void setAStarGuidePath(const std::vector<Point>& guidePath);  // 设置A*引导路径
     
     // 坐标转换
     sf::Vector2f worldToScreen(const Point& worldPos);
@@ -36,6 +38,7 @@ public:
     void drawMap();
     void drawStartEnd();
     void drawPath();
+    void drawAStarGuidePath();  // 绘制A*引导路径
     void drawText();
     
     // 事件处理和运行
@@ -51,6 +54,7 @@ public:
     Visualizer(Map*, PathPlanner*, int = 800, int = 600) {}
     void setStartEnd(const Point&, const Point&) {}
     void setPath(const std::vector<Point>&) {}
+    void setAStarGuidePath(const std::vector<Point>&) {}  // 占位符方法
     void run() { std::cout << "SFML 可视化未启用" << std::endl; }
 };
 #endif

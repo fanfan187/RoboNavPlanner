@@ -98,12 +98,12 @@ public:
         , _particalCount(particalCount)
         , _globalGuideCoe(globalGuideCoe)
         , _localGuideCoe(localGuideCoe)
-        , _maxSpeed(maxSpeed)
+        , _globalBestPartical(dimension)
         , _positionMinValue(positionMinValue, positionMinValue + dimension)
         , _positionMaxValue(positionMaxValue, positionMaxValue + dimension)
-        , _particalSet(particalCount, ZPSO_Partical(dimension))
-        , _globalBestPartical(dimension)
+        , _maxSpeed(maxSpeed)
         , _fitnessFunction(std::move(objFunction))
+        , _particalSet(particalCount, ZPSO_Partical(dimension))
     {
         // vector 自动管理内存，无需手动分配
     }
@@ -179,7 +179,7 @@ public:
         //粒子速度归化为随机大小v_mod
         double v_mod = rand0_1()*_maxSpeed;
         velocityMod = sqrt(velocityMod);
-        for(int j=0;j<_particalSet[0]._position.size();j++)
+        for(size_t j=0;j<_particalSet[0]._position.size();j++)
             _particalSet[0]._velocity[j] *= (v_mod/velocityMod);
 
         //更新粒子初代适应度值与最佳适应度值
@@ -193,7 +193,7 @@ public:
             velocityMod = 0;
             //初始化粒子位置与速度
             //遍历粒子的任一维度
-            for(int j=0;j<_particalSet[i]._position.size();j++)
+            for(size_t j=0;j<_particalSet[i]._position.size();j++)
             {
                 //随机初始化粒子位置与最佳位置
                 double tempVal = _positionMinValue[j];
@@ -207,7 +207,7 @@ public:
             //粒子速度归化为随机大小v_mod
             v_mod = rand0_1()*_maxSpeed;
             velocityMod = sqrt(velocityMod);
-            for(int j=0;j<_particalSet[i]._position.size();j++)
+            for(size_t j=0;j<_particalSet[i]._position.size();j++)
                 _particalSet[i]._velocity[j] *= (v_mod/velocityMod);
 
             //更新粒子初代适应度值与最佳适应度值
@@ -279,7 +279,7 @@ public:
             v_mod = 0;
             double r1 = rand0_1();
             double r2 = rand0_1();
-            for(int j=0;j<_particalSet[i]._position.size();j++)
+            for(size_t j=0;j<_particalSet[i]._position.size();j++)
             {
                 //速度更新
                 //全局最优位置加速度
@@ -292,13 +292,13 @@ public:
             //粒子速度受限
             v_mod = sqrt(v_mod);
             if(v_mod > _maxSpeed)
-                for(int j=0;j<_particalSet[i]._position.size();j++)
+                for(size_t j=0;j<_particalSet[i]._position.size();j++)
                     _particalSet[i]._velocity[j] *= (_maxSpeed/v_mod);
             //对粒子速度进行扰动，提高算法局部搜索能力
             if(rand0_1()<disturbanceRate)
                 this->disturbance(_particalSet[i],disturbanceVelocityCoe);
             //位置更新
-            for(int j=0;j<_particalSet[i]._position.size();j++)
+            for(size_t j=0;j<_particalSet[i]._position.size();j++)
             {
                 _particalSet[i]._position[j] += _particalSet[i]._velocity[j];
                 //粒子位置受限
@@ -306,6 +306,34 @@ public:
                     _particalSet[i]._position[j] = _positionMinValue[j];
                 else if(_particalSet[i]._position[j] > _positionMaxValue[j])
                     _particalSet[i]._position[j] = _positionMaxValue[j];
+            }
+            //更新粒子适应度
+            _particalSet[i]._fitness = _fitnessFunction(_particalSet[i]);
+            //更新粒子个体最优位置
+            if(_particalSet[i]._fitness > _particalSet[i]._bestFitness)
+            {
+                _particalSet[i]._bestPosition = _particalSet[i]._position;
+                _particalSet[i]._bestFitness = _particalSet[i]._fitness;
+                //更新全局最优解
+                if(_particalSet[i]._bestFitness > _globalBestPartical._bestFitness)
+                {
+                    _globalBestPartical.copy(_particalSet[i]);
+                }
+            }
+            //更新粒子速度
+            for(size_t j=0;j<_particalSet[i]._position.size();j++)
+            {
+                _particalSet[i]._velocity[j] += _globalGuideCoe*rand0_1()*(_globalBestPartical._bestPosition[j] - _particalSet[i]._position[j]) +
+                                               _localGuideCoe*rand0_1()*(_particalSet[i]._bestPosition[j] - _particalSet[i]._position[j]);
+            }
+            //速度限制
+            double velocityMod = 0;
+            for(size_t j=0;j<_particalSet[i]._position.size();j++)
+                velocityMod += _particalSet[i]._velocity[j]*_particalSet[i]._velocity[j];
+            velocityMod = sqrt(velocityMod);
+            if(velocityMod > _maxSpeed) {
+                for(size_t j=0;j<_particalSet[i]._position.size();j++)
+                    _particalSet[i]._velocity[j] *= (_maxSpeed/velocityMod);
             }
         }
         //更新粒子群适应度

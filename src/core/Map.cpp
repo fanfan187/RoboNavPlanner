@@ -133,4 +133,10 @@ int Map::getCell(int x, int y) const {
         return grid[y][x];
     }
     return 1; // 边界外视为障碍物
+}
+
+void Map::setCell(int x, int y, int value) {
+    if (x >= 0 && x < width && y >= 0 && y < height) {
+        grid[y][x] = value;
+    }
 } 

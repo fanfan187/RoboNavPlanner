@@ -40,6 +40,9 @@ public:
     
     // 获取网格值（用于可视化）
     int getCell(int x, int y) const;
+    
+    // 设置网格值（用于演示）
+    void setCell(int x, int y, int value);
 };
 
 #endif // MAP_H 

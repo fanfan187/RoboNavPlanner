@@ -2,11 +2,11 @@
 #define PATHPLANNER_H
 
 #include "../../include/Common.h"
-#include "../algorithm/ZPSOAlgorithm.h"
+#include "../../include/algorithm/IPathPlanningAlgorithm.h"
 #include "Map.h"
 #include <vector>
-#include <cmath>
-#include <iostream>
+#include <memory>
+#include <chrono>
 
 class PathPlanner {
 private:
@@ -15,82 +15,42 @@ private:
     Point endPoint;
     int numWaypoints;
     std::vector<Point> bestPath;
-    // 添加 currentPlanner 静态声明
+    
+    // 算法策略：使用抽象接口而非具体实现
+    std::unique_ptr<IPathPlanningAlgorithm> algorithm;
+    
+    // 静态成员变量
     static PathPlanner* currentPlanner;
-
-public:
-    PathPlanner(Map* m, const Point& start, const Point& end, int waypoints = 5) 
-        : map(m), startPoint(start), endPoint(end), numWaypoints(waypoints) {}
-
-    // 设置起点和终点
-    void setStartEnd(const Point& start, const Point& end) {
-        startPoint = start;
-        endPoint = end;
-    }
-
-    // 从粒子位置解码路径
-    std::vector<Point> decodePath(const ZPSO_Partical& particle) const {
-        std::vector<Point> path;
-        path.push_back(startPoint);
-
-        // 添加中间航点
-        for (int i = 0; i < numWaypoints; i++) {
-            double x = particle._position[i * 2];
-            double y = particle._position[i * 2 + 1];
-            path.push_back(Point(x, y));
-        }
-
-        path.push_back(endPoint);
-        return path;
-    }
-
-    // 计算路径总长度
-    double calculatePathLength(const std::vector<Point>& path) const {
-        double totalLength = 0.0;
-        for (size_t i = 1; i < path.size(); i++) {
-            totalLength += path[i-1].distanceTo(path[i]);
-        }
-        return totalLength;
-    }
-
-    // 检查路径是否与障碍物碰撞
-    bool isPathColliding(const std::vector<Point>& path) const {
-        for (size_t i = 1; i < path.size(); i++) {
-            if (map->isLineColliding(path[i-1], path[i])) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    // 适应度函数（PSO要最大化此值）
-    double evaluateFitness(ZPSO_Partical& particle) {
-        std::vector<Point> path = decodePath(particle);
+    
+    // 路径评估器（独立于算法）
+    class PathEvaluator {
+    private:
+        const Map* map;
         
-        // 基础适应度
-        double fitness = 1000.0;
-
-        // 碰撞惩罚（最重要）
-        if (isPathColliding(path)) {
-            fitness -= 10000.0; // 巨大惩罚
-        }
-
-        // 检查航点是否在边界内
-        for (int i = 0; i < numWaypoints; i++) {
-            double x = particle._position[i * 2];
-            double y = particle._position[i * 2 + 1];
-            if (!map->isInBounds(x, y)) {
-                fitness -= 5000.0; // 边界惩罚
+    public:
+        explicit PathEvaluator(const Map* m) : map(m) {}
+        
+        double calculatePathLength(const std::vector<Point>& path) const {
+            double totalLength = 0.0;
+            for (size_t i = 1; i < path.size(); i++) {
+                totalLength += path[i-1].distanceTo(path[i]);
             }
+            return totalLength;
         }
-
-        // 路径长度惩罚
-        double pathLength = calculatePathLength(path);
-        fitness -= pathLength * 10.0; // 路径越长，适应度越低
-
-        // 平滑度奖励（减少急转弯）
-        double smoothnessBonus = 0.0;
-        if (path.size() >= 3) {
+        
+        bool isPathColliding(const std::vector<Point>& path) const {
+            for (size_t i = 1; i < path.size(); i++) {
+                if (map->isLineColliding(path[i-1], path[i])) {
+                    return true;
+                }
+            }
+            return false;
+        }
+        
+        double calculateSmoothness(const std::vector<Point>& path) const {
+            if (path.size() < 3) return 1.0;
+            
+            double totalSmoothness = 0.0;
             for (size_t i = 1; i < path.size() - 1; i++) {
                 Point prev = path[i-1];
                 Point curr = path[i];
@@ -103,86 +63,47 @@ public:
                 double v2y = next.y - curr.y;
                 
                 double dot = v1x * v2x + v1y * v2y;
-                double mag1 = sqrt(v1x * v1x + v1y * v1y);
-                double mag2 = sqrt(v2x * v2x + v2y * v2y);
+                double mag1 = std::sqrt(v1x * v1x + v1y * v1y);
+                double mag2 = std::sqrt(v2x * v2x + v2y * v2y);
                 
                 if (mag1 > 0 && mag2 > 0) {
                     double cosAngle = dot / (mag1 * mag2);
-                    smoothnessBonus += cosAngle * 50.0; // 角度越小（越平滑），奖励越高
+                    totalSmoothness += cosAngle;
                 }
             }
+            return totalSmoothness / (path.size() - 2);
         }
-        fitness += smoothnessBonus;
+    };
+    
+    PathEvaluator evaluator;
 
-        return fitness;
-    }
+public:
+    // 构造函数：接受算法策略
+    PathPlanner(Map* m, const Point& start, const Point& end, 
+                std::unique_ptr<IPathPlanningAlgorithm> algo,
+                int waypoints = 5);
 
-    // 创建一个静态成员函数作为包装器/跳板
-    static double staticFitnessFuncton(ZPSO_Partical& particle) {
-        if (currentPlanner != nullptr) {
-            // 通过静态指针调用当前实例的非静态成员函数
-            return currentPlanner->evaluateFitness(particle);
-        } else {
-            // 错误处理：currentPlaner 未设置
-            // 对于最大化问题，返回一个非常差的适应度值
-            std::cerr << "错误：PathPlanner 未被设置！" << std::endl;
-            return -1.0e100;
-        }
-    }
+    // 设置起点和终点
+    void setStartEnd(const Point& start, const Point& end);
+    
+    // 切换算法（策略模式）
+    void setAlgorithm(std::unique_ptr<IPathPlanningAlgorithm> algo);
+    
+    // 获取当前算法信息
+    std::string getCurrentAlgorithmName() const;
 
-    // 执行路径规划
-    std::vector<Point> planPath(int generations = 200, int particleCount = 100) {
-        // 设置PSO参数
-        int dimension = numWaypoints * 2; // 每个航点有x,y两个坐标
-        
-        // 设置搜索边界
-        double* minPos = new double[dimension];
-        double* maxPos = new double[dimension];
-        
-        double mapWidth = map->getWidth() * map->getCellSize();
-        double mapHeight = map->getHeight() * map->getCellSize();
-        
-        for (int i = 0; i < dimension; i += 2) {
-            minPos[i] = 0.0;     // x坐标最小值
-            maxPos[i] = mapWidth; // x坐标最大值
-            minPos[i+1] = 0.0;   // y坐标最小值
-            maxPos[i+1] = mapHeight; // y坐标最大值
-        }
-
-        // 设置全局指针以便静态函数访问
-        currentPlanner = this;
-
-        // 创建PSO算法实例
-        ZPSO_Algorithm pso(
-            // 传递静态成员函数的地址
-            PathPlanner::staticFitnessFuncton,
-            minPos, maxPos, dimension, particleCount,
-            2.0, 2.0, 4.0 // globalGuideCoe, localGuideCoe, maxSpeed
-        );
-
-        // 执行优化
-        ZPSO_Partical bestParticle;
-        pso.findMax(generations, bestParticle);
-
-        // 解码最佳路径
-        bestPath = decodePath(bestParticle);
-
-        // 清理内存
-        delete[] minPos;
-        delete[] maxPos;
-
-        std::cout << "路径规划完成！" << std::endl;
-        std::cout << "最佳适应度: " << bestParticle._fitness << std::endl;
-        std::cout << "路径长度: " << calculatePathLength(bestPath) << std::endl;
-        std::cout << "是否碰撞: " << (isPathColliding(bestPath) ? "是" : "否") << std::endl;
-
-        return bestPath;
-    }
+    // 执行路径规划 - 现在通过抽象接口调用
+    PathPlanningResult planPath();
+    
+    // 路径质量分析方法
+    double calculatePathLength(const std::vector<Point>& path) const;
+    
+    bool isPathColliding(const std::vector<Point>& path) const;
+    
+    double calculateSmoothness(const std::vector<Point>& path) const;
 
     // 获取最佳路径
-    const std::vector<Point>& getBestPath() const {
-        return bestPath;
-    }
+    const std::vector<Point>& getBestPath() const;
 };
 
 #endif // PATHPLANNER_H 

@@ -1,6 +1,7 @@
 // #include "algorithm/ZPSOAlgorithm.h"  // 粒子群优化算法
 #include "core/Map.h"
 #include "core/PathPlanner.h"
+#include "algorithm/HybridAStarPSOAlgorithm.h"
 #include "visualization/Visualizer.h"
 #include "config/ConfigManager.h"
 #include <math.h>
@@ -43,10 +44,21 @@ int main() {
         std::cout << "警告: 终点位于障碍物中！" << std::endl;
     }
 
+    // 创建算法实例
+    auto algorithm = std::make_unique<HybridAStarPSOAlgorithm>();
+    
+    // 设置算法参数
+    algorithm->setParameter("particleCount", config.pso.particleCount);
+    algorithm->setParameter("generations", config.pso.generations);
+    algorithm->setParameter("globalGuideCoe", config.pso.globalGuideCoe);
+    algorithm->setParameter("localGuideCoe", config.pso.localGuideCoe);
+    algorithm->setParameter("maxSpeed", config.pso.maxSpeed);
+
     // 创建路径规划器 - 使用配置文件中的参数
-    PathPlanner planner(&robotMap, startPoint, endPoint, config.pathPlanning.numWaypoints);
+    PathPlanner planner(&robotMap, startPoint, endPoint, std::move(algorithm), config.pathPlanning.numWaypoints);
 
     std::cout << "\n开始路径规划..." << std::endl;
+    std::cout << "使用算法: " << planner.getCurrentAlgorithmName() << std::endl;
     std::cout << "中间航点数量: " << config.pathPlanning.numWaypoints << std::endl;
     std::cout << "粒子维度: " << config.pathPlanning.numWaypoints * 2 << std::endl;
 
@@ -54,7 +66,7 @@ int main() {
     auto startTime = std::chrono::high_resolution_clock::now();
 
     // 执行路径规划 - 使用配置文件中的PSO参数
-    std::vector<Point> bestPath = planner.planPath(config.pso.generations, config.pso.particleCount);
+    auto result = planner.planPath();
 
     // 记录结束时间
     auto endTime = std::chrono::high_resolution_clock::now();
@@ -63,11 +75,11 @@ int main() {
     std::cout << "\n路径规划耗时: " << duration.count() << " 毫秒" << std::endl;
 
     // 输出路径信息
-    std::cout << "\n找到的路径包含 " << bestPath.size() << " 个点:" << std::endl;
-    for (size_t i = 0; i < bestPath.size(); i++) {
-        std::cout << "  点 " << i << ": (" << bestPath[i].x << ", " << bestPath[i].y << ")";
+    std::cout << "\n找到的路径包含 " << result.path.size() << " 个点:" << std::endl;
+    for (size_t i = 0; i < result.path.size(); i++) {
+        std::cout << "  点 " << i << ": (" << result.path[i].x << ", " << result.path[i].y << ")";
         if (i == 0) std::cout << " [起点]";
-        else if (i == bestPath.size() - 1) std::cout << " [终点]";
+        else if (i == result.path.size() - 1) std::cout << " [终点]";
         else std::cout << " [航点]";
         std::cout << std::endl;
     }
@@ -78,7 +90,7 @@ int main() {
                          config.visualization.windowWidth, 
                          config.visualization.windowHeight);
     visualizer.setStartEnd(startPoint, endPoint);
-    visualizer.setPath(bestPath);
+    visualizer.setPath(result.path);
 
     std::cout << "可视化说明:" << std::endl;
     std::cout << "  白色区域: 可通行" << std::endl;
