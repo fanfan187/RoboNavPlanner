@@ -227,3 +227,47 @@ cmake --build .
     }
 }
 ```
+## 7.项目文件树
+```text
+RoboNavPlanner/
+├── CMakeLists.txt
+├── README.md
+├── data/
+│   ├── config/
+│   │   └── pso_config.json
+│   └── maps/
+│       └── map.txt
+├── docs/
+│   ├── algorithmic_decoupling.md
+│   ├── execution_output.md
+│   ├── project_detailed.md
+│   └── run.md
+├── include/
+│   ├── Common.h
+│   ├── algorithm/
+│   │   └── IPathPlanningAlgorithm.h
+│   └── config/
+│       └── ConfigManager.h
+├── src/
+│   ├── main.cpp
+│   ├── main_console.cpp
+│   ├── algorithm/
+│   │   ├── AStarAlgorithm.h
+│   │   ├── HybridAStarPSOAlgorithm.h
+│   │   └── ZPSOAlgorithm.h
+│   ├── config/
+│   │   └── ConfigManager.cpp
+│   ├── core/
+│   │   ├── Map.cpp
+│   │   ├── Map.h
+│   │   ├── PathPlanner.cpp
+│   │   └── PathPlanner.h
+│   └── visualization/
+│       ├── Visualizer.cpp
+│       └── Visualizer.h
+└── tests/
+    ├── debug_include.cpp
+    ├── debug_include2.cpp
+    ├── test_point_unification.cpp
+    └── test_version.cpp
+```
