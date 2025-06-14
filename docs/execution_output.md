@@ -5,8 +5,8 @@
 ```
 ![image.png](../pictures/image3.png)
 
-![image.png](../pictures/image1.png)
-![image.png](../pictures/image2.png)
+![image.png](../pictures/console.png)
+![image.png](../pictures/console2.png)
 
 
 ## 方式二：SFML版本

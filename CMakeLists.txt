@@ -16,7 +16,7 @@ set(SFML_DIR "${SFML_ROOT}/lib/cmake/SFML")
 # 设置静态链接（重要：基于lib目录结构）
 set(SFML_STATIC_LIBRARIES TRUE)
 
-# 查找SFML（不指定版本号，让它自动检测）
+# 查找SFML
 find_package(SFML REQUIRED COMPONENTS Graphics Window System)
 
 # 设置源文件
