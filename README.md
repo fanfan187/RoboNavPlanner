@@ -1,127 +1,96 @@
-# 基于粒子群优化(PSO)的机器人路径规划
+# RoboNavPlanner: 混合A*与PSO的机器人路径规划器
+(Hybrid A*-PSO Robot Path Planner)
 
-这是一个使用粒子群优化算法进行机器人路径规划的C++项目，提供控制台版本和SFML可视化版本。
+`RoboNavPlanner` 是一个用 C++17 实现的模块化机器人路径规划系统。它采用创新的 **混合A\*与粒子群优化 (Hybrid A*-PSO) 算法**，在包含障碍物的二维地图中，高效地寻找从起点到终点的平滑、无碰撞路径。
 
-## 项目特性
+项目提供两种模式，以适应不同需求：
+* **图形化版本 (SFML Version)**: 提供动态、直观的可视化界面，能同时展示 A\* 算法生成的全局引导路径和 PSO 算法的最终优化路径。
+* **控制台版本 (Console Version)**: 无图形库依赖，可在任何标准终端中运行，通过 ASCII 字符展示地图和路径，便于快速测试与验证。
 
-- 🤖 基于PSO算法的智能路径规划
-- 🗺️ 支持自定义障碍物地图
-- 🎯 避障和路径长度优化
-- 📊 ASCII控制台可视化 + SFML图形可视化
-- ⚡ 高效的碰撞检测算法
-- 🚀 两个版本：控制台版本（无依赖）和图形版本（需要SFML）
+![SFML Visualization](pictures/SFML.png)
+*SFML 图形化版本输出*
 
-## 文件结构 
-```text
-RoboNavPlanner/
-├── README.md                     # 项目说明文档
-├── CMakeLists.txt                # 现代化构建系统
-├── Makefile                      # 备用构建系统
-├── compile.bat                   # Windows快速编译脚本
-├── 
-├── src/                          # 源代码目录
-│   ├── main.cpp                  # 主程序入口
-│   ├── algorithm/                # 算法模块
-│   │   ├── ZPSOAlgorithm.h       # PSO算法头文件
-│   │   └── ZPSOAlgorithm.cpp     # PSO算法实现
-│   ├── core/                     # 核心模块
-│   │   ├── Map.h                 # 地图类头文件
-│   │   ├── Map.cpp               # 地图类实现
-│   │   ├── PathPlanner.h         # 路径规划器头文件
-│   │   └── PathPlanner.cpp       # 路径规划器实现
-│   └── visualization/            # 可视化模块
-│       ├── Visualizer.h          # 可视化器头文件
-│       └── Visualizer.cpp        # 可视化器实现
-│
-├── include/                      # 公共头文件目录
-│   └── Common.h                  # 公共类型定义
-│
-├── data/                         # 数据文件目录
-│   ├── maps/                     # 地图文件
-│   │   ├── map.txt               # 默认地图
-│   │   └── complex_map.txt       # 复杂地图
-│   └── config/                   # 配置文件
-│       └── pso_config.json       # PSO参数配置
-│
-├── build/                        # 构建输出目录
-│   └── .gitkeep                  # 保持目录结构
-│
-├── docs/                         # 文档目录
-│   ├── algorithm.md              # 算法说明
-│   ├── usage.md                  # 使用说明
-│   └── api.md                    # API文档
-│
-├── tests/                        # 测试目录
-│   ├── test_map.cpp              # 地图测试
-│   ├── test_planner.cpp          # 规划器测试
-│   └── test_data/                # 测试数据
-│
-└── scripts/                      # 构建和工具脚本
-    ├── setup.sh                  # Linux/Mac 环境设置
-    ├── setup.bat                 # Windows 环境设置
-    └── run_tests.sh              # 运行测试脚本
-```
+## 核心特性
+
+-   **创新混合算法**: 结合 A\* 算法的全局搜索能力和 PSO 算法的局部优化能力，显著提升路径质量和收敛速度。
+-   **高度解耦的架构**: 采用**策略 (Strategy) 设计模式**，将路径规划算法与核心逻辑分离，使得添加或切换新算法（如 RRT\*, Dijkstra）变得轻而易举。
+-   **双版本支持**: 通过 CMake 和预处理器宏 (`USE_SFML`, `CONSOLE_VERSION`) 实现条件编译，从单一代码库生成图形和控制台两个版本。
+-   **外部参数配置**: 所有关键参数（如PSO迭代次数、粒子数量、航点数等）均可通过 `data/config/pso_config.json` 文件进行配置，无需重新编译即可调整算法行为。
+-   **现代化 C++ 实践**: 项目广泛使用 C++17 标准，包括智能指针 (`std::unique_ptr`)、`std::function` 等，保证了代码的健壮性和可维护性。
+-   **自定义地图**: 支持从文本文件加载自定义地图布局。
 
 ## 快速开始
 
-### 方法1：控制台版本（推荐，无依赖）
+### 依赖项
+-   C++17 编译器 (例如 MinGW, GCC, Clang)
+-   CMake (版本 >= 3.16)
+-   SFML 图形库 (仅图形化版本需要)
 
-```bash
-# Windows
-compile_console.bat
-RoboNavPlanner_Console.exe
+### 构建与运行
 
-# Linux/Mac
-g++ -std=c++17 -Isrc -o RoboNavPlanner_Console src/main_console.cpp
-./RoboNavPlanner_Console
-```
+1.  **克隆或下载项目**
 
-### 方法2：图形版本（需要SFML）
+2.  **配置CMake**
+    * 确保 SFML 库的路径在 `CMakeLists.txt` 中已正确设置 (默认为 `C:/Tools/SFML`)。
+    * 创建构建目录并生成构建文件：
+    ```bash
+    mkdir build
+    cd build
+    cmake ..
+    ```
 
-首先安装SFML库，然后：
+3.  **编译项目**
+    ```bash
+    cmake --build .
+    ```
 
-```bash
-# Windows
-compile.bat
-RoboNavPlanner.exe
+4.  **运行程序**
+    可执行文件位于 `build/bin/` 目录下。
 
-# Linux
-make
-./RoboNavPlanner
-```
+    * **运行图形化版本:**
+        ```bash
+        # 如果提示缺少 DLL，请从 SFML 的 bin 目录复制到此目录下
+        ./bin/RoboNavPlanner.exe
+        ```
 
-## 运行效果
+    * **运行控制台版本:**
+        ```bash
+        ./bin/RoboNavPlanner_Console.exe
+        ```
 
-控制台版本将显示：
-- 路径规划过程信息
-- ASCII地图可视化
-- 路径质量分析
-- 性能统计
-
-示例输出：
-```
-=== 基于PSO的机器人路径规划系统 (控制台版本) ===
-起点: (2.00, 2.00)
-终点: (17.00, 17.00)
-
-开始路径规划...
-中间航点数量: 6
-粒子维度: 12
-PSO参数:
-  进化代数: 300
-  粒子数量: 150
-
-路径规划完成！
-最佳适应度: 856.23
-路径长度: 21.45
-是否碰撞: 否
+### 控制台输出示例
+控制台版本会使用 ASCII 字符清晰地展示地图、障碍物和最终路径。
 
 === 地图和路径可视化 ===
 图例: S=起点, E=终点, *=路径, #=障碍物, .=可通行
-   0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9
- 0 # # # # # # # # # # # # # # # # # # # #
- 1 # . . . . . . . . . . . . . . . . . . #
- 2 # . S . . . . . . . . . . . . . . . . #
- 3 # . . * . . . . . . . . . . . . . . . #
- ...
+```text
+0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9
+0 # # # # # # # # # # # # # # # # # # # #
+1 # . . . . . . . . . . . . . . . . . . #
+2 # . S . . . . . . . . . . . . . . . . #
+3 # . . * . . . . . . . . . . . . . . . #
+...
+16 # . . . . . . . . . . . . . . . * . . #
+17 # . . . . . . . . . . . . . . . . E . #
+18 # . . . . . . . . . . . . . . . . . . #
+19 # # # # # # # # # # # # # # # # # # # #
+```
+
+## 项目结构
+```text
+RoboNavPlanner/
+├── CMakeLists.txt              # CMake 构建脚本
+├── data/
+│   ├── maps/map.txt            # 地图数据文件
+│   └── config/pso_config.json  # 算法和应用配置文件
+├── docs/                       # 项目文档
+├── include/                    # 全局头文件 (如 Common.h, 算法接口)
+├── src/                        # 源代码
+│   ├── main.cpp                # SFML 版本主程序
+│   ├── main_console.cpp        # 控制台版本主程序
+│   ├── algorithm/              # 算法实现 (HybridAStarPSO, AStar, ZPSO)
+│   ├── core/                   # 核心逻辑 (PathPlanner, Map)
+│   ├── visualization/          # SFML 可视化器
+│   └── config/                 # 配置管理器
+└── build/                      # 编译输出目录
 ```
