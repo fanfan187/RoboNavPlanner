@@ -166,21 +166,21 @@ Point end(17, 17);
 
 ```
 RoboNavPlanner/
-├── bin/                # 可执行文件
-├── build/              # 编译目录
-├── data/
-│   ├── config/pso_config.json
-│   └── maps/map.txt
-├── src/
-│   ├── a_star.cpp
-│   ├── a_star.h
-│   ├── main.cpp
-│   ├── pso.cpp
-│   ├── pso.h
-│   └── ...             # 其他源文件
-├── .gitignore
 ├── CMakeLists.txt
-└── compile.bat
+├── README.md
+├── data/
+│   ├── config/
+│   └── maps/
+├── docs/
+├── include/
+│   ├── algorithm/
+│   └── config/
+├── src/
+│   ├── algorithm/
+│   ├── config/
+│   ├── core/
+│   └── visualization/
+└── tests/
 ```
 
 ---
