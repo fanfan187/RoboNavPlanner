@@ -53,7 +53,7 @@ public:
 ### 3.2. 路径规划器 (PathPlanner)
 `PathPlanner` 类是路径规划任务的组织和协调者。它不关心当前使用的是哪种具体算法，只通过 `IPathPlanningAlgorithm` 接口来调用。
 
-```C++
+```cpp
 
 // src/core/PathPlanner.h
 class PathPlanner {
@@ -75,6 +75,7 @@ public:
     PathPlanningResult planPath();
 };
 这种设计（依赖注入和策略模式）使得 PathPlanner 与具体算法实现完全解耦，未来可以轻松集成如 RRT*, Dijkstra 等新算法，而无需修改任何 PathPlanner 的代码。
+```
 
 ### 3.3. 架构演进示意图
 重构前 (紧耦合)
@@ -96,107 +97,117 @@ public:
 ```
 
 ## 4. 模块详解
-src/main.cpp & src/main_console.cpp (程序入口)
-main.cpp: 图形化版本的主入口。
+`src/main.cpp` & `src/main_console.cpp` (程序入口)
+`main.cpp`: 图形化版本的主入口。
 
-创建并加载 ConfigManager 来读取 pso_config.json 的配置。
-创建 Map 对象并从 data/maps/map.txt 加载地图数据。
-创建 HybridAStarPSOAlgorithm 算法实例，并从配置中设置其参数。
-将算法实例注入 PathPlanner。
-调用 planner.planPath() 执行规划。
-创建 Visualizer 对象，并传入地图、路径等数据进行渲染。
-进入 visualizer.run() 的主循环。
-main_console.cpp: 控制台版本的主入口。
+1. 创建并加载 ConfigManager 来读取 pso_config.json 的配置。
+2. 创建 Map 对象并从 data/maps/map.txt 加载地图数据。
+3. 创建 HybridAStarPSOAlgorithm 算法实例，并从配置中设置其参数。
+4. 将算法实例注入 PathPlanner。
+5. 调用 planner.planPath() 执行规划。
+6. 创建 Visualizer 对象，并传入地图、路径等数据进行渲染。
+7. 进入 visualizer.run() 的主循环。
 
-执行流程与图形版本基本相同（1-5步）。
-规划完成后，不创建 Visualizer，而是调用自定义的 printMap 函数。
-printMap 函数在控制台使用ASCII字符（S, E, *, #）绘制地图和路径的概览。
-src/core (核心逻辑)
-Map 类:
 
-职责: 表示二维环境，包括可通行区域和障碍物，并提供碰撞检测功能。
-数据结构: 内部使用 std::vector<std::vector<int>> grid，0 代表可通行，1 代表障碍物。
-碰撞检测: isLineColliding(start, end) 是其核心功能，使用 Bresenham's line algorithm 判断两点之间的连线是否经过障碍物栅格。
-地图加载: loadFromFile(filename) 方法可以从文本文件加载地图布局。
-PathPlanner 类:
 
-职责: 作为任务协调者，整合地图、算法和规划请求。
-主要方法: planPath() 是其核心，它直接调用当前 algorithm 策略的 planPath 方法来完成实际的计算工作。
-src/algorithm (算法实现)
-HybridAStarPSOAlgorithm 类:
+`main_console.cpp`: 控制台版本的主入口。
 
-职责: 实现 IPathPlanningAlgorithm 接口，是当前系统的核心算法。
-工作流程:
-第一阶段 (全局引导): 实例化一个内部的 AStarAlgorithm 对象，在栅格地图上快速计算出一条从起点到终点的全局引导路径 astarGuidePath。
-第二阶段 (局部优化): 实例化 ZPSO_Algorithm 对象。其适应度函数 (evaluateFitness) 是此算法的精髓，它不仅评估路径长度和碰撞，还引入了一个偏离惩罚项：PSO生成的路径点如果偏离A*引导路径太远，则适应度会降低。
-结果: 最终输出的是经过PSO优化后的平滑、无碰撞且大致遵循A*引导方向的路径。
-AStarAlgorithm 类:
+1. 执行流程与图形版本基本相同（1-5步）。
+2. 规划完成后，不创建 Visualizer，而是调用自定义的 printMap 函数。
+3. printMap 函数在控制台使用ASCII字符（S, E, *, #）绘制地图和路径的概览。
 
-一个经典的A*算法实现，用于在网格上寻找最短路径。它使用优先队列管理开放列表，并能处理8方向移动。
-ZPSOAlgorithm 类:
+`src/core` (核心逻辑)
+* `Map` 类:
 
-一个功能完整的PSO算法库，定义了 ZPSO_Partical (粒子) 和 ZPSO_Algorithm (算法主体)。它负责管理粒子群的初始化、速度/位置更新、适应度评估和全局最优解的追踪。
-src/visualization (可视化)
-Visualizer 类:
-职责: 使用SFML库将路径规划的整个过程和结果绘制到窗口中。
-条件编译: 整个类的实现被包裹在 #ifdef USE_SFML ... #endif 中。当 CMakeLists.txt 定义了 USE_SFML 宏时（即编译图形版本），这部分代码才生效。否则，会使用一个空的占位符类，避免链接错误。
-绘制内容:
-drawMap(): 绘制障碍物。
-drawStartEnd(): 绘制起点（绿）和终点（红）。
-drawAStarGuidePath(): 绘制A*的引导路径（黄线）。
-drawPath(): 绘制PSO的最终路径（蓝线）。
-src/config (配置管理)
-ConfigManager 类:
-职责: 负责解析 data/config/pso_config.json 文件。
-实现: 它实现了一个简单的手动JSON解析器，逐行读取并解析键值对，然后填充到 AppConfig 结构体中。
+  * 职责: 表示二维环境，包括可通行区域和障碍物，并提供碰撞检测功能。
+  * 数据结构: 内部使用 std::vector<std::vector<int>> grid，0 代表可通行，1 代表障碍物。
+  * 碰撞检测: isLineColliding(start, end) 是其核心功能，使用 Bresenham's line algorithm 判断两点之间的连线是否经过障碍物栅格。
+  * 地图加载: loadFromFile(filename) 方法可以从文本文件加载地图布局。
+ 
+* `PathPlanner` 类:
+  * 职责: 作为任务协调者，整合地图、算法和规划请求。
+  * 主要方法: planPath() 是其核心，它直接调用当前 algorithm 策略的 planPath 方法来完成实际的计算工作。
+
+`src/algorithm` (算法实现)
+* `HybridAStarPSOAlgorithm` 类:
+
+  * 职责: 实现 IPathPlanningAlgorithm 接口，是当前系统的核心算法。
+  * 工作流程:
+    1. 第一阶段 (全局引导): 实例化一个内部的 `AStarAlgorithm` 对象，在栅格地图上快速计算出一条从起点到终点的全局引导路径 `astarGuidePath`。
+    2. 第二阶段 (局部优化): 实例化 `ZPSO_Algorithm` 对象。其适应度函数 (`evaluateFitness`) 是此算法的精髓，它不仅评估路径长度和碰撞，还引入了一个偏离惩罚项：PSO生成的路径点如果偏离A*引导路径太远，则适应度会降低。
+    3. 结果: 最终输出的是经过PSO优化后的平滑、无碰撞且大致遵循A*引导方向的路径。
+   
+`AStarAlgorithm` 类:
+* 一个经典的A*算法实现，用于在网格上寻找最短路径。它使用优先队列管理开放列表，并能处理8方向移动。
+
+`ZPSOAlgorithm` 类:
+* 一个功能完整的PSO算法库，定义了 ZPSO_Partical (粒子) 和 ZPSO_Algorithm (算法主体)。它负责管理粒子群的初始化、速度/位置更新、适应度评估和全局最优解的追踪。
+
+`src/visualization` (可视化)
+`Visualizer` 类:
+    * 职责: 使用SFML库将路径规划的整个过程和结果绘制到窗口中。
+    * 条件编译: 整个类的实现被包裹在 #ifdef USE_SFML ... #endif 中。当 CMakeLists.txt 定义了 USE_SFML 宏时（即编译图形版本），这部分代码才生效。否则，会使用一个空的占位符类，避免链接错误。
+    * 绘制内容:
+        * drawMap(): 绘制障碍物。
+        * drawStartEnd(): 绘制起点（绿）和终点（红）。
+        * drawAStarGuidePath(): 绘制A*的引导路径（黄线）。
+        * drawPath(): 绘制PSO的最终路径（蓝线）。
+        
+`src/config` (配置管理)
+* `ConfigManager` 类:
+    * 职责: 负责解析 data/config/pso_config.json 文件。
+    * 实现: 它实现了一个简单的手动JSON解析器，逐行读取并解析键值对，然后填充到 AppConfig 结构体中。
+
 ## 5. 构建与运行
-依赖项
-C++17 编译器 (如 GCC/MinGW, Clang, MSVC)
-CMake (版本 >= 3.16)
-SFML 库 (版本 >= 2.5，仅图形版本需要)
-构建步骤 (使用CMake)
-配置SFML: 确保SFML库被安装在 C:/Tools/SFML，或者相应地修改 CMakeLists.txt 中的 SFML_ROOT 路径。
-创建构建目录:
-Bash
+**依赖项**
+* C++17 编译器 (如 GCC/MinGW, Clang, MSVC)
+* CMake (版本 >= 3.16)
+* SFML 库 (版本 >= 2.5，仅图形版本需要)
 
+**构建步骤 (使用CMake)**
+1. **配置SFML**: 确保SFML库被安装在 `C:/Tools/SFML`，或者相应地修改 `CMakeLists.txt` 中的 `SFML_ROOT` 路径。
+2. **创建构建目录**:
+```Bash
 mkdir build
 cd build
-生成构建文件:
-Bash
-
+```
+3. **生成构建文件:**
+```Bash
 # 对于 MinGW Makefiles
 cmake .. -G "MinGW Makefiles" -D CMAKE_EXPORT_COMPILE_COMMANDS=TRUE
-编译:
-Bash
-
+```
+4. **编译:**
+```Bash
 cmake --build .
-运行: 生成的可执行文件位于 build/bin/ 目录下。
-Bash
-
+```
+5. **运行**: 生成的可执行文件位于 build/bin/ 目录下。
+```Bash
 # 运行图形版本
 ./bin/RoboNavPlanner.exe
 
 # 运行控制台版本
 ./bin/RoboNavPlanner_Console.exe
-6. 数据格式说明
-地图文件 (data/maps/map.txt)
+```
+
+## 6. 数据格式说明
+**地图文件 (`data/maps/map.txt`)**
 这是一个简单的文本文件：
 
-第一行: 两个整数，分别代表地图的 高度(height) 和 宽度(width)。
-后续行: 一个 height x width 的矩阵，由 0 或 1 组成，用空格分隔。
-0: 可通行的自由空间。
-1: 障碍物。
+* 第一行: 两个整数，分别代表地图的 高度(height) 和 宽度(width)。
+* 后续行: 一个 height x width 的矩阵，由 0 或 1 组成，用空格分隔。
+    * 0: 可通行的自由空间。
+    * 1: 障碍物。
 示例:
-
+```text
 20 20
 1 1 1 ...
 1 0 0 ...
 ...
-配置文件 (data/config/pso_config.json)
+```
+**配置文件 (`data/config/pso_config.json`)**
 一个JSON文件，用于配置程序的所有可调参数。
 
-JSON
-
+```text
 {
     "pso": {
         "generations": 300,       // PSO迭代代数
@@ -215,3 +226,4 @@ JSON
         "frameRate": 60           // 帧率
     }
 }
+```
