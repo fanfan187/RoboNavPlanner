@@ -7,7 +7,7 @@
 * **图形化版本 (SFML Version)**: 提供动态、直观的可视化界面，能同时展示 A\* 算法生成的全局引导路径和 PSO 算法的最终优化路径。
 * **控制台版本 (Console Version)**: 无图形库依赖，可在任何标准终端中运行，通过 ASCII 字符展示地图和路径，便于快速测试与验证。
 
-![SFML Visualization](pictures/SFML.png)
+![SFML Visualization](pictures/SFML3.png)
 *SFML 图形化版本输出*
 
 ## 核心特性

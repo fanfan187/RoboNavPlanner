@@ -1,0 +1,761 @@
+{
+    "extension": "linecounter",
+    "version": "0.2.7",
+    "workspace": "e:\\9_算法设计与分析\\算法课设\\RoboNavPlanner",
+    "linecount": [
+        {
+            "version": "0.2.7",
+            "counttime": "2025-06-14 23:18:14",
+            "filesum": 107,
+            "codesum": 6829,
+            "commentsum": 822,
+            "blanksum": 1196,
+            "statistics": {
+                ".cpp": {
+                    "code": 1361,
+                    "comment": 160,
+                    "blank": 315
+                },
+                ".md": {
+                    "code": 471,
+                    "comment": 22,
+                    "blank": 128
+                },
+                ".h": {
+                    "code": 867,
+                    "comment": 460,
+                    "blank": 199
+                },
+                ".bat": {
+                    "code": 73,
+                    "comment": 9,
+                    "blank": 15
+                },
+                "": {
+                    "code": 386,
+                    "comment": 0,
+                    "blank": 119
+                },
+                ".txt": {
+                    "code": 284,
+                    "comment": 171,
+                    "blank": 96
+                },
+                ".json": {
+                    "code": 2483,
+                    "comment": 0,
+                    "blank": 9
+                },
+                ".cmake": {
+                    "code": 218,
+                    "comment": 0,
+                    "blank": 150
+                },
+                ".rsp": {
+                    "code": 6,
+                    "comment": 0,
+                    "blank": 0
+                },
+                ".make": {
+                    "code": 123,
+                    "comment": 0,
+                    "blank": 54
+                },
+                ".ninja": {
+                    "code": 226,
+                    "comment": 0,
+                    "blank": 97
+                },
+                ".ts": {
+                    "code": 4,
+                    "comment": 0,
+                    "blank": 0
+                },
+                ".marks": {
+                    "code": 1,
+                    "comment": 0,
+                    "blank": 0
+                },
+                ".check_cache": {
+                    "code": 1,
+                    "comment": 0,
+                    "blank": 0
+                },
+                ".yaml": {
+                    "code": 325,
+                    "comment": 0,
+                    "blank": 14
+                }
+            },
+            "filelist": [
+                {
+                    "blank": 4,
+                    "code": 15,
+                    "comment": 0,
+                    "filename": ".gitignore"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": "build\\.cmake\\api\\v1\\query\\client-vscode\\query.json"
+                },
+                {
+                    "blank": 0,
+                    "code": 1387,
+                    "comment": 0,
+                    "filename": "build\\.cmake\\api\\v1\\reply\\cache-v2-28233a592d124ba2a2b9.json"
+                },
+                {
+                    "blank": 0,
+                    "code": 262,
+                    "comment": 0,
+                    "filename": "build\\.cmake\\api\\v1\\reply\\cmakeFiles-v1-9399134769fa637caa7c.json"
+                },
+                {
+                    "blank": 0,
+                    "code": 69,
+                    "comment": 0,
+                    "filename": "build\\.cmake\\api\\v1\\reply\\codemodel-v2-d5dc17ec438e673f3368.json"
+                },
+                {
+                    "blank": 0,
+                    "code": 14,
+                    "comment": 0,
+                    "filename": "build\\.cmake\\api\\v1\\reply\\directory-.-Debug-d0094a50bb2071803777.json"
+                },
+                {
+                    "blank": 0,
+                    "code": 132,
+                    "comment": 0,
+                    "filename": "build\\.cmake\\api\\v1\\reply\\index-2025-06-14T14-31-50-0513.json"
+                },
+                {
+                    "blank": 2,
+                    "code": 290,
+                    "comment": 0,
+                    "filename": "build\\.cmake\\api\\v1\\reply\\target-RoboNavPlanner-Debug-dd15a92f56a6dbe79bf6.json"
+                },
+                {
+                    "blank": 2,
+                    "code": 168,
+                    "comment": 0,
+                    "filename": "build\\.cmake\\api\\v1\\reply\\target-RoboNavPlanner_Console-Debug-721710114032cc357476.json"
+                },
+                {
+                    "blank": 5,
+                    "code": 86,
+                    "comment": 0,
+                    "filename": "build\\.cmake\\api\\v1\\reply\\toolchains-v1-e36924b07dd6098234c5.json"
+                },
+                {
+                    "filename": "build\\.ninja_deps",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "blank": 0,
+                    "code": 9,
+                    "comment": 0,
+                    "filename": "build\\.ninja_log"
+                },
+                {
+                    "blank": 71,
+                    "code": 169,
+                    "comment": 0,
+                    "filename": "build\\build.ninja"
+                },
+                {
+                    "blank": 7,
+                    "code": 50,
+                    "comment": 0,
+                    "filename": "build\\cmake_install.cmake"
+                },
+                {
+                    "blank": 77,
+                    "code": 167,
+                    "comment": 171,
+                    "filename": "build\\CMakeCache.txt"
+                },
+                {
+                    "blank": 25,
+                    "code": 80,
+                    "comment": 0,
+                    "filename": "build\\CMakeFiles\\3.30.4\\CMakeCXXCompiler.cmake"
+                },
+                {
+                    "filename": "build\\CMakeFiles\\3.30.4\\CMakeDetermineCompilerABI_CXX.bin",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "blank": 0,
+                    "code": 6,
+                    "comment": 0,
+                    "filename": "build\\CMakeFiles\\3.30.4\\CMakeRCCompiler.cmake"
+                },
+                {
+                    "blank": 5,
+                    "code": 10,
+                    "comment": 0,
+                    "filename": "build\\CMakeFiles\\3.30.4\\CMakeSystem.cmake"
+                },
+                {
+                    "filename": "build\\CMakeFiles\\3.30.4\\CompilerIdCXX\\a.exe",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "blank": 159,
+                    "code": 698,
+                    "comment": 62,
+                    "filename": "build\\CMakeFiles\\3.30.4\\CompilerIdCXX\\CMakeCXXCompilerId.cpp"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": "build\\CMakeFiles\\cmake.check_cache"
+                },
+                {
+                    "blank": 14,
+                    "code": 325,
+                    "comment": 0,
+                    "filename": "build\\CMakeFiles\\CMakeConfigureLog.yaml"
+                },
+                {
+                    "blank": 4,
+                    "code": 12,
+                    "comment": 0,
+                    "filename": "build\\CMakeFiles\\CMakeDirectoryInformation.cmake"
+                },
+                {
+                    "blank": 60,
+                    "code": 16,
+                    "comment": 0,
+                    "filename": "build\\CMakeFiles\\Makefile.cmake"
+                },
+                {
+                    "blank": 36,
+                    "code": 103,
+                    "comment": 0,
+                    "filename": "build\\CMakeFiles\\Makefile2"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": "build\\CMakeFiles\\progress.marks"
+                },
+                {
+                    "blank": 22,
+                    "code": 46,
+                    "comment": 0,
+                    "filename": "build\\CMakeFiles\\RoboNavPlanner.dir\\build.make"
+                },
+                {
+                    "blank": 15,
+                    "code": 6,
+                    "comment": 0,
+                    "filename": "build\\CMakeFiles\\RoboNavPlanner.dir\\cmake_clean.cmake"
+                },
+                {
+                    "blank": 0,
+                    "code": 2,
+                    "comment": 0,
+                    "filename": "build\\CMakeFiles\\RoboNavPlanner.dir\\compiler_depend.make"
+                },
+                {
+                    "blank": 0,
+                    "code": 2,
+                    "comment": 0,
+                    "filename": "build\\CMakeFiles\\RoboNavPlanner.dir\\compiler_depend.ts"
+                },
+                {
+                    "blank": 0,
+                    "code": 2,
+                    "comment": 0,
+                    "filename": "build\\CMakeFiles\\RoboNavPlanner.dir\\depend.make"
+                },
+                {
+                    "blank": 11,
+                    "code": 16,
+                    "comment": 0,
+                    "filename": "build\\CMakeFiles\\RoboNavPlanner.dir\\DependInfo.cmake"
+                },
+                {
+                    "blank": 4,
+                    "code": 6,
+                    "comment": 0,
+                    "filename": "build\\CMakeFiles\\RoboNavPlanner.dir\\flags.make"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": "build\\CMakeFiles\\RoboNavPlanner.dir\\includes_CXX.rsp"
+                },
+                {
+                    "blank": 0,
+                    "code": 3,
+                    "comment": 0,
+                    "filename": "build\\CMakeFiles\\RoboNavPlanner.dir\\link.txt"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": "build\\CMakeFiles\\RoboNavPlanner.dir\\linkLibs.rsp"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": "build\\CMakeFiles\\RoboNavPlanner.dir\\objects1.rsp"
+                },
+                {
+                    "blank": 1,
+                    "code": 6,
+                    "comment": 0,
+                    "filename": "build\\CMakeFiles\\RoboNavPlanner.dir\\progress.make"
+                },
+                {
+                    "filename": "build\\CMakeFiles\\RoboNavPlanner.dir\\src\\config\\ConfigManager.cpp.obj",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "build\\CMakeFiles\\RoboNavPlanner.dir\\src\\core\\Map.cpp.obj",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "build\\CMakeFiles\\RoboNavPlanner.dir\\src\\main.cpp.obj",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "build\\CMakeFiles\\RoboNavPlanner.dir\\src\\visualization\\Visualizer.cpp.obj",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "blank": 22,
+                    "code": 46,
+                    "comment": 0,
+                    "filename": "build\\CMakeFiles\\RoboNavPlanner_Console.dir\\build.make"
+                },
+                {
+                    "blank": 13,
+                    "code": 6,
+                    "comment": 0,
+                    "filename": "build\\CMakeFiles\\RoboNavPlanner_Console.dir\\cmake_clean.cmake"
+                },
+                {
+                    "blank": 0,
+                    "code": 2,
+                    "comment": 0,
+                    "filename": "build\\CMakeFiles\\RoboNavPlanner_Console.dir\\compiler_depend.make"
+                },
+                {
+                    "blank": 0,
+                    "code": 2,
+                    "comment": 0,
+                    "filename": "build\\CMakeFiles\\RoboNavPlanner_Console.dir\\compiler_depend.ts"
+                },
+                {
+                    "blank": 0,
+                    "code": 2,
+                    "comment": 0,
+                    "filename": "build\\CMakeFiles\\RoboNavPlanner_Console.dir\\depend.make"
+                },
+                {
+                    "blank": 10,
+                    "code": 16,
+                    "comment": 0,
+                    "filename": "build\\CMakeFiles\\RoboNavPlanner_Console.dir\\DependInfo.cmake"
+                },
+                {
+                    "blank": 4,
+                    "code": 6,
+                    "comment": 0,
+                    "filename": "build\\CMakeFiles\\RoboNavPlanner_Console.dir\\flags.make"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": "build\\CMakeFiles\\RoboNavPlanner_Console.dir\\includes_CXX.rsp"
+                },
+                {
+                    "blank": 0,
+                    "code": 3,
+                    "comment": 0,
+                    "filename": "build\\CMakeFiles\\RoboNavPlanner_Console.dir\\link.txt"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": "build\\CMakeFiles\\RoboNavPlanner_Console.dir\\linkLibs.rsp"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": "build\\CMakeFiles\\RoboNavPlanner_Console.dir\\objects1.rsp"
+                },
+                {
+                    "blank": 1,
+                    "code": 5,
+                    "comment": 0,
+                    "filename": "build\\CMakeFiles\\RoboNavPlanner_Console.dir\\progress.make"
+                },
+                {
+                    "filename": "build\\CMakeFiles\\RoboNavPlanner_Console.dir\\src\\config\\ConfigManager.cpp.obj",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "build\\CMakeFiles\\RoboNavPlanner_Console.dir\\src\\core\\Map.cpp.obj",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "build\\CMakeFiles\\RoboNavPlanner_Console.dir\\src\\main_console.cpp.obj",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "blank": 26,
+                    "code": 57,
+                    "comment": 0,
+                    "filename": "build\\CMakeFiles\\rules.ninja"
+                },
+                {
+                    "blank": 0,
+                    "code": 4,
+                    "comment": 0,
+                    "filename": "build\\CMakeFiles\\TargetDirectories.txt"
+                },
+                {
+                    "blank": 0,
+                    "code": 56,
+                    "comment": 0,
+                    "filename": "build\\compile_commands.json"
+                },
+                {
+                    "blank": 79,
+                    "code": 259,
+                    "comment": 0,
+                    "filename": "build\\Makefile"
+                },
+                {
+                    "filename": "build\\RoboNavPlanner.exe",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "build\\RoboNavPlanner_Console.exe",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "build\\sfml-graphics-3.dll",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "build\\sfml-system-3.dll",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "build\\sfml-window-3.dll",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "blank": 19,
+                    "code": 86,
+                    "comment": 0,
+                    "filename": "CMakeLists.txt"
+                },
+                {
+                    "blank": 7,
+                    "code": 32,
+                    "comment": 5,
+                    "filename": "compile.bat"
+                },
+                {
+                    "blank": 5,
+                    "code": 20,
+                    "comment": 3,
+                    "filename": "compile_console.bat"
+                },
+                {
+                    "blank": 3,
+                    "code": 21,
+                    "comment": 1,
+                    "filename": "compile_demo.bat"
+                },
+                {
+                    "blank": 0,
+                    "code": 18,
+                    "comment": 0,
+                    "filename": "data\\config\\pso_config.json"
+                },
+                {
+                    "blank": 0,
+                    "code": 21,
+                    "comment": 0,
+                    "filename": "data\\maps\\map.txt"
+                },
+                {
+                    "blank": 42,
+                    "code": 139,
+                    "comment": 10,
+                    "filename": "docs\\algorithmic_decoupling.md"
+                },
+                {
+                    "blank": 3,
+                    "code": 14,
+                    "comment": 0,
+                    "filename": "docs\\execution_output.md"
+                },
+                {
+                    "blank": 31,
+                    "code": 82,
+                    "comment": 11,
+                    "filename": "docs\\project_detailed.md"
+                },
+                {
+                    "blank": 35,
+                    "code": 157,
+                    "comment": 1,
+                    "filename": "docs\\run.md"
+                },
+                {
+                    "blank": 21,
+                    "code": 54,
+                    "comment": 95,
+                    "filename": "include\\algorithm\\IPathPlanningAlgorithm.h"
+                },
+                {
+                    "blank": 9,
+                    "code": 27,
+                    "comment": 4,
+                    "filename": "include\\Common.h"
+                },
+                {
+                    "blank": 12,
+                    "code": 40,
+                    "comment": 6,
+                    "filename": "include\\config\\ConfigManager.h"
+                },
+                {
+                    "filename": "pictures\\console.png",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "pictures\\console2.png",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "pictures\\image3.png",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "pictures\\SFML.png",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "blank": 17,
+                    "code": 79,
+                    "comment": 0,
+                    "filename": "README.md"
+                },
+                {
+                    "filename": "RoboNavPlanner_Console.exe",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "blank": 39,
+                    "code": 131,
+                    "comment": 87,
+                    "filename": "src\\algorithm\\AStarAlgorithm.h"
+                },
+                {
+                    "blank": 56,
+                    "code": 230,
+                    "comment": 91,
+                    "filename": "src\\algorithm\\HybridAStarPSOAlgorithm.h"
+                },
+                {
+                    "blank": 17,
+                    "code": 235,
+                    "comment": 146,
+                    "filename": "src\\algorithm\\ZPSOAlgorithm.h"
+                },
+                {
+                    "blank": 19,
+                    "code": 114,
+                    "comment": 6,
+                    "filename": "src\\config\\ConfigManager.cpp"
+                },
+                {
+                    "blank": 21,
+                    "code": 114,
+                    "comment": 11,
+                    "filename": "src\\core\\Map.cpp"
+                },
+                {
+                    "blank": 12,
+                    "code": 27,
+                    "comment": 10,
+                    "filename": "src\\core\\Map.h"
+                },
+                {
+                    "blank": 14,
+                    "code": 48,
+                    "comment": 11,
+                    "filename": "src\\core\\PathPlanner.cpp"
+                },
+                {
+                    "blank": 24,
+                    "code": 74,
+                    "comment": 12,
+                    "filename": "src\\core\\PathPlanner.h"
+                },
+                {
+                    "blank": 22,
+                    "code": 71,
+                    "comment": 19,
+                    "filename": "src\\main.cpp"
+                },
+                {
+                    "blank": 28,
+                    "code": 108,
+                    "comment": 23,
+                    "filename": "src\\main_console.cpp"
+                },
+                {
+                    "blank": 38,
+                    "code": 156,
+                    "comment": 21,
+                    "filename": "src\\visualization\\Visualizer.cpp"
+                },
+                {
+                    "blank": 9,
+                    "code": 49,
+                    "comment": 9,
+                    "filename": "src\\visualization\\Visualizer.h"
+                },
+                {
+                    "blank": 1,
+                    "code": 7,
+                    "comment": 0,
+                    "filename": "tests\\debug_include.cpp"
+                },
+                {
+                    "filename": "tests\\debug_include.exe",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "blank": 1,
+                    "code": 7,
+                    "comment": 0,
+                    "filename": "tests\\debug_include2.cpp"
+                },
+                {
+                    "filename": "tests\\debug_include2.exe",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "tests\\test_point.exe",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "blank": 7,
+                    "code": 20,
+                    "comment": 4,
+                    "filename": "tests\\test_point_unification.cpp"
+                },
+                {
+                    "filename": "tests\\test_point_unification.exe",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "blank": 5,
+                    "code": 18,
+                    "comment": 3,
+                    "filename": "tests\\test_version.cpp"
+                },
+                {
+                    "filename": "tests\\test_version.exe",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,138 @@
+===============================================================================
+EXTENSION NAME : linecounter
+EXTENSION VERSION : 0.2.7
+-------------------------------------------------------------------------------
+count time : 2025-06-14 23:18:14
+count workspace : e:\9_算法设计与分析\算法课设\RoboNavPlanner
+total files : 107
+total code lines : 6829
+total comment lines : 822
+total blank lines : 1196
+
+    statistics
+   |      extension|     total code|  total comment|    total blank|percent|
+   -------------------------------------------------------------------------
+   |           .cpp|           1361|            160|            315|     20|
+   |            .md|            471|             22|            128|    6.9|
+   |             .h|            867|            460|            199|     13|
+   |           .bat|             73|              9|             15|    1.1|
+   |               |            386|              0|            119|    5.7|
+   |           .txt|            284|            171|             96|    4.2|
+   |          .json|           2483|              0|              9|     36|
+   |         .cmake|            218|              0|            150|    3.2|
+   |           .rsp|              6|              0|              0|  0.088|
+   |          .make|            123|              0|             54|    1.8|
+   |         .ninja|            226|              0|             97|    3.3|
+   |            .ts|              4|              0|              0|  0.059|
+   |         .marks|              1|              0|              0|  0.015|
+   |   .check_cache|              1|              0|              0|  0.015|
+   |          .yaml|            325|              0|             14|    4.8|
+   -------------------------------------------------------------------------
+.gitignore, code is 15, comment is 0, blank is 4.
+build\.cmake\api\v1\query\client-vscode\query.json, code is 1, comment is 0, blank is 0.
+build\.cmake\api\v1\reply\cache-v2-28233a592d124ba2a2b9.json, code is 1387, comment is 0, blank is 0.
+build\.cmake\api\v1\reply\cmakeFiles-v1-9399134769fa637caa7c.json, code is 262, comment is 0, blank is 0.
+build\.cmake\api\v1\reply\codemodel-v2-d5dc17ec438e673f3368.json, code is 69, comment is 0, blank is 0.
+build\.cmake\api\v1\reply\directory-.-Debug-d0094a50bb2071803777.json, code is 14, comment is 0, blank is 0.
+build\.cmake\api\v1\reply\index-2025-06-14T14-31-50-0513.json, code is 132, comment is 0, blank is 0.
+build\.cmake\api\v1\reply\target-RoboNavPlanner-Debug-dd15a92f56a6dbe79bf6.json, code is 290, comment is 0, blank is 2.
+build\.cmake\api\v1\reply\target-RoboNavPlanner_Console-Debug-721710114032cc357476.json, code is 168, comment is 0, blank is 2.
+build\.cmake\api\v1\reply\toolchains-v1-e36924b07dd6098234c5.json, code is 86, comment is 0, blank is 5.
+build\.ninja_deps, it is a binary file.
+build\.ninja_log, code is 9, comment is 0, blank is 0.
+build\build.ninja, code is 169, comment is 0, blank is 71.
+build\cmake_install.cmake, code is 50, comment is 0, blank is 7.
+build\CMakeCache.txt, code is 167, comment is 171, blank is 77.
+build\CMakeFiles\3.30.4\CMakeCXXCompiler.cmake, code is 80, comment is 0, blank is 25.
+build\CMakeFiles\3.30.4\CMakeDetermineCompilerABI_CXX.bin, it is a binary file.
+build\CMakeFiles\3.30.4\CMakeRCCompiler.cmake, code is 6, comment is 0, blank is 0.
+build\CMakeFiles\3.30.4\CMakeSystem.cmake, code is 10, comment is 0, blank is 5.
+build\CMakeFiles\3.30.4\CompilerIdCXX\a.exe, it is a binary file.
+build\CMakeFiles\3.30.4\CompilerIdCXX\CMakeCXXCompilerId.cpp, code is 698, comment is 62, blank is 159.
+build\CMakeFiles\cmake.check_cache, code is 1, comment is 0, blank is 0.
+build\CMakeFiles\CMakeConfigureLog.yaml, code is 325, comment is 0, blank is 14.
+build\CMakeFiles\CMakeDirectoryInformation.cmake, code is 12, comment is 0, blank is 4.
+build\CMakeFiles\Makefile.cmake, code is 16, comment is 0, blank is 60.
+build\CMakeFiles\Makefile2, code is 103, comment is 0, blank is 36.
+build\CMakeFiles\progress.marks, code is 1, comment is 0, blank is 0.
+build\CMakeFiles\RoboNavPlanner.dir\build.make, code is 46, comment is 0, blank is 22.
+build\CMakeFiles\RoboNavPlanner.dir\cmake_clean.cmake, code is 6, comment is 0, blank is 15.
+build\CMakeFiles\RoboNavPlanner.dir\compiler_depend.make, code is 2, comment is 0, blank is 0.
+build\CMakeFiles\RoboNavPlanner.dir\compiler_depend.ts, code is 2, comment is 0, blank is 0.
+build\CMakeFiles\RoboNavPlanner.dir\depend.make, code is 2, comment is 0, blank is 0.
+build\CMakeFiles\RoboNavPlanner.dir\DependInfo.cmake, code is 16, comment is 0, blank is 11.
+build\CMakeFiles\RoboNavPlanner.dir\flags.make, code is 6, comment is 0, blank is 4.
+build\CMakeFiles\RoboNavPlanner.dir\includes_CXX.rsp, code is 1, comment is 0, blank is 0.
+build\CMakeFiles\RoboNavPlanner.dir\link.txt, code is 3, comment is 0, blank is 0.
+build\CMakeFiles\RoboNavPlanner.dir\linkLibs.rsp, code is 1, comment is 0, blank is 0.
+build\CMakeFiles\RoboNavPlanner.dir\objects1.rsp, code is 1, comment is 0, blank is 0.
+build\CMakeFiles\RoboNavPlanner.dir\progress.make, code is 6, comment is 0, blank is 1.
+build\CMakeFiles\RoboNavPlanner.dir\src\config\ConfigManager.cpp.obj, it is a binary file.
+build\CMakeFiles\RoboNavPlanner.dir\src\core\Map.cpp.obj, it is a binary file.
+build\CMakeFiles\RoboNavPlanner.dir\src\main.cpp.obj, it is a binary file.
+build\CMakeFiles\RoboNavPlanner.dir\src\visualization\Visualizer.cpp.obj, it is a binary file.
+build\CMakeFiles\RoboNavPlanner_Console.dir\build.make, code is 46, comment is 0, blank is 22.
+build\CMakeFiles\RoboNavPlanner_Console.dir\cmake_clean.cmake, code is 6, comment is 0, blank is 13.
+build\CMakeFiles\RoboNavPlanner_Console.dir\compiler_depend.make, code is 2, comment is 0, blank is 0.
+build\CMakeFiles\RoboNavPlanner_Console.dir\compiler_depend.ts, code is 2, comment is 0, blank is 0.
+build\CMakeFiles\RoboNavPlanner_Console.dir\depend.make, code is 2, comment is 0, blank is 0.
+build\CMakeFiles\RoboNavPlanner_Console.dir\DependInfo.cmake, code is 16, comment is 0, blank is 10.
+build\CMakeFiles\RoboNavPlanner_Console.dir\flags.make, code is 6, comment is 0, blank is 4.
+build\CMakeFiles\RoboNavPlanner_Console.dir\includes_CXX.rsp, code is 1, comment is 0, blank is 0.
+build\CMakeFiles\RoboNavPlanner_Console.dir\link.txt, code is 3, comment is 0, blank is 0.
+build\CMakeFiles\RoboNavPlanner_Console.dir\linkLibs.rsp, code is 1, comment is 0, blank is 0.
+build\CMakeFiles\RoboNavPlanner_Console.dir\objects1.rsp, code is 1, comment is 0, blank is 0.
+build\CMakeFiles\RoboNavPlanner_Console.dir\progress.make, code is 5, comment is 0, blank is 1.
+build\CMakeFiles\RoboNavPlanner_Console.dir\src\config\ConfigManager.cpp.obj, it is a binary file.
+build\CMakeFiles\RoboNavPlanner_Console.dir\src\core\Map.cpp.obj, it is a binary file.
+build\CMakeFiles\RoboNavPlanner_Console.dir\src\main_console.cpp.obj, it is a binary file.
+build\CMakeFiles\rules.ninja, code is 57, comment is 0, blank is 26.
+build\CMakeFiles\TargetDirectories.txt, code is 4, comment is 0, blank is 0.
+build\compile_commands.json, code is 56, comment is 0, blank is 0.
+build\Makefile, code is 259, comment is 0, blank is 79.
+build\RoboNavPlanner.exe, it is a binary file.
+build\RoboNavPlanner_Console.exe, it is a binary file.
+build\sfml-graphics-3.dll, it is a binary file.
+build\sfml-system-3.dll, it is a binary file.
+build\sfml-window-3.dll, it is a binary file.
+CMakeLists.txt, code is 86, comment is 0, blank is 19.
+compile.bat, code is 32, comment is 5, blank is 7.
+compile_console.bat, code is 20, comment is 3, blank is 5.
+compile_demo.bat, code is 21, comment is 1, blank is 3.
+data\config\pso_config.json, code is 18, comment is 0, blank is 0.
+data\maps\map.txt, code is 21, comment is 0, blank is 0.
+docs\algorithmic_decoupling.md, code is 139, comment is 10, blank is 42.
+docs\execution_output.md, code is 14, comment is 0, blank is 3.
+docs\project_detailed.md, code is 82, comment is 11, blank is 31.
+docs\run.md, code is 157, comment is 1, blank is 35.
+include\algorithm\IPathPlanningAlgorithm.h, code is 54, comment is 95, blank is 21.
+include\Common.h, code is 27, comment is 4, blank is 9.
+include\config\ConfigManager.h, code is 40, comment is 6, blank is 12.
+pictures\console.png, it is a binary file.
+pictures\console2.png, it is a binary file.
+pictures\image3.png, it is a binary file.
+pictures\SFML.png, it is a binary file.
+README.md, code is 79, comment is 0, blank is 17.
+RoboNavPlanner_Console.exe, it is a binary file.
+src\algorithm\AStarAlgorithm.h, code is 131, comment is 87, blank is 39.
+src\algorithm\HybridAStarPSOAlgorithm.h, code is 230, comment is 91, blank is 56.
+src\algorithm\ZPSOAlgorithm.h, code is 235, comment is 146, blank is 17.
+src\config\ConfigManager.cpp, code is 114, comment is 6, blank is 19.
+src\core\Map.cpp, code is 114, comment is 11, blank is 21.
+src\core\Map.h, code is 27, comment is 10, blank is 12.
+src\core\PathPlanner.cpp, code is 48, comment is 11, blank is 14.
+src\core\PathPlanner.h, code is 74, comment is 12, blank is 24.
+src\main.cpp, code is 71, comment is 19, blank is 22.
+src\main_console.cpp, code is 108, comment is 23, blank is 28.
+src\visualization\Visualizer.cpp, code is 156, comment is 21, blank is 38.
+src\visualization\Visualizer.h, code is 49, comment is 9, blank is 9.
+tests\debug_include.cpp, code is 7, comment is 0, blank is 1.
+tests\debug_include.exe, it is a binary file.
+tests\debug_include2.cpp, code is 7, comment is 0, blank is 1.
+tests\debug_include2.exe, it is a binary file.
+tests\test_point.exe, it is a binary file.
+tests\test_point_unification.cpp, code is 20, comment is 4, blank is 7.
+tests\test_point_unification.exe, it is a binary file.
+tests\test_version.cpp, code is 18, comment is 3, blank is 5.
+tests\test_version.exe, it is a binary file.
+===============================================================================
